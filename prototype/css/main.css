@@ -25,6 +25,8 @@ h1 {
     text-rendering: geometricPrecision;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    padding-top: 0.3em;
 }
 
 h1 a {
