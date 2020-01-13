@@ -1,0 +1,45 @@
+/* admin page specific css */
+h1 {
+    padding-top: 2em;
+}
+.pure-form .pure-g {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.pure-form label {
+    text-align: right;
+    margin-right: 0.7em;
+}
+.pure-form label.pure-checkbox {
+    text-align: left;
+}
+
+.pure-form input {
+    font-family: 'Bitter', serif;
+}
+
+#username, #password, #button {
+    /* center in div */
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 0.7em;
+}
+
+#button {
+    margin-top: 0.9em;
+}
+
+.pure-button {
+    border-radius: 2em;
+    font-family: 'Bitter', serif;
+    font-size: 1em;
+}
+
+/* any div with break class will break flexbox to a new row */
+/* source: https://tobiasahlin.com/blog/flexbox-break-to-new-row/ */
+.break {
+    flex-basis: 100%;
+    height: 0;
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Info.Name}}</title>
+
+    <!-- purecss -->
+    <link rel="stylesheet" href="css/pure/pure.css"/>
+    <link rel="stylesheet" href="css/pure/grids-responsive.css">
+
+    <!-- fonts -->
+    <link rel="stylesheet" href="fonts/bitter/bitter.css"/>
+    <link rel="stylesheet" href="fonts/spectral/spectral.css"/>
+    <link rel="stylesheet" href="fonts/aleo/aleo.css"/>
+
+    <!-- main css file -->
+    <link rel="stylesheet" href="css/main.css"/>
+
+    <!-- enable "responsiveness" -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="pure-g" id="main">
+    <div class="pure-u-5-6 pure-u-sm-4-5 pure-u-md-3-5 pure-u-lg-1-2 pure-u-xl-5-12" id="content">
+        <h1><a href="/">{{.Info.Name}}</a></h1>
+        {{range $key, $value := .Articles}}
+        <div id="article">
+            <h2>{{$value.Name}}</h2>
+            <p>{{$value.Content}}</p>
+            <div class="pure-g" id="read_more">
+                <div class="pure-u">
+                    <a href="article/{{$key}}">Read more...</a>
+                </div>
+            </div>
+        </div>
+        {{end}}
+        <div class="pure-g" id="navigation-page">
+            <div class="pure-u-1-3" id="navigation-page-last">
+                <a href="/" >< Last</a>
+            </div>
+            <div class="pure-u-1-3" id="navigation-page-next">
+                <a href="/">Next ></a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

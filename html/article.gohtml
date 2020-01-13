@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Info.Name}}</title>
+
+    <!-- purecss -->
+    <link rel="stylesheet" href="{{.RootURL}}css/pure/pure.css"/>
+    <link rel="stylesheet" href="{{.RootURL}}css/pure/grids-responsive.css">
+
+    <!-- fonts -->
+    <link rel="stylesheet" href="{{.RootURL}}fonts/bitter/bitter.css"/>
+    <link rel="stylesheet" href="{{.RootURL}}fonts/spectral/spectral.css"/>
+    <link rel="stylesheet" href="{{.RootURL}}fonts/aleo/aleo.css"/>
+
+    <!-- main css file -->
+    <link rel="stylesheet" href="{{.RootURL}}css/main.css"/>
+
+    <!-- enable "responsiveness" -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+<div class="pure-g" id="main">
+    <!--<div class="pure-u"></div>-->
+    <div class="pure-u-5-6 pure-u-sm-4-5 pure-u-md-3-5 pure-u-lg-5-8 pure-u-xl-5-12" id="content">
+        <h1><a href="/">{{.Info.Name}}</a></h1>
+        <div id="article">
+            <h2>{{.Article.Name}}</h2>
+            <p>{{.Article.Content}}</p>
+        </div>
+    </div>
+    <!--<div class="pure-u"></div>-->
+</div>
+</body>
+</html>
