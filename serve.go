@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -21,12 +23,12 @@ type Article struct {
 }
 
 type IndexView struct {
-	Info     *BlogInfo
+	Info     BlogInfo
 	Articles *[]*Article
 }
 
 type ArticleView struct {
-	Info    *BlogInfo
+	Info    BlogInfo
 	Article *Article
 	RootURL string
 }
@@ -35,7 +37,7 @@ var articles []*Article
 
 var templates []*template.Template
 
-var blogInfo *BlogInfo
+var blogInfo BlogInfo
 
 var indexView *IndexView
 
@@ -150,15 +152,69 @@ func handleFonts(rw http.ResponseWriter, req *http.Request) {
 	io.Copy(rw, file)
 }
 
+type Config struct {
+	BlogName string
+	Port     string
+}
+
+func readConfig() *Config {
+	// open file
+	file, err := os.Open("config.json")
+	if err != nil {
+		panic("Can't read config.json")
+	}
+
+	// read json, unmarshal and return
+	cfg := Config{}
+	bytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		panic("Error while reading config.json")
+	}
+	if json.Unmarshal(bytes, &cfg) != nil {
+		panic("The syntax of config.json is invalid")
+	}
+	return &cfg
+}
+
+func createConfig() {
+	// open file
+	file, err := os.Create("config.json")
+	if err != nil {
+		panic("Failed to create config.json")
+	}
+
+	// default configuration file
+	cfg := Config{
+		BlogName: "My blog",
+		Port:     "::8080",
+	}
+
+	// marshal json and save
+	bytes, _ := json.MarshalIndent(cfg, "", "\t")
+	_, err = file.Write(bytes)
+	if err != nil {
+		panic("Failed to write config.json")
+	}
+
+}
+
 func main() {
+
+	// check if config does exist, and if it doesn't, create a new one
+	if file, err := os.Open("config.json"); err != nil {
+		_ = file.Close()
+		createConfig()
+	}
+
+	cfg := readConfig()
 
 	// init
 	articles = make([]*Article, 0, 10)
 	templates = make([]*template.Template, 0, 10)
 
 	// prepare data for Views
-	blogInfo = &BlogInfo{
-		Name: "Loremum Ipsium",
+	blogInfo = BlogInfo{
+		Name: cfg.BlogName,
 	}
 
 	indexView = &IndexView{
@@ -187,7 +243,7 @@ func main() {
 	mux.HandleFunc("/fonts/", handleFonts)
 
 	// start the web server
-	if err := http.ListenAndServe(":80", mux); err != nil {
+	if err := http.ListenAndServe(cfg.Port, mux); err != nil {
 		fmt.Println("Error while starting web server:", err.Error())
 	}
 }
