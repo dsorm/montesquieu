@@ -1,11 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -22,11 +20,6 @@ type Article struct {
 	Content template.HTML
 }
 
-type IndexView struct {
-	Info     BlogInfo
-	Articles *[]*Article
-}
-
 type ArticleView struct {
 	Info    BlogInfo
 	Article *Article
@@ -39,18 +32,10 @@ var templates []*template.Template
 
 var blogInfo BlogInfo
 
-var indexView *IndexView
-
 const (
 	templateIndex = iota
 	templateArticle
 )
-
-func handleIndex(rw http.ResponseWriter, req *http.Request) {
-	if err := templates[templateIndex].Execute(rw, indexView); err != nil {
-		fmt.Println("Error while parsing template:", err.Error())
-	}
-}
 
 func handleArticle(rw http.ResponseWriter, req *http.Request) {
 	// split the uri (example: /articles/1 )
@@ -58,20 +43,20 @@ func handleArticle(rw http.ResponseWriter, req *http.Request) {
 
 	// make sure there are 3 splits
 	if len(split) != 3 {
-		rw.WriteHeader(404)
+		handle404(rw, req)
 		return
 	}
 
 	// convert to number
 	i, err := strconv.Atoi(split[2])
 	if err != nil {
-		rw.WriteHeader(404)
+		handle404(rw, req)
 		return
 	}
 
 	// make sure article with the number exists
 	if articles[i] == nil {
-		rw.WriteHeader(404)
+		handle404(rw, req)
 		return
 	}
 
@@ -92,7 +77,8 @@ func handleCss(rw http.ResponseWriter, req *http.Request) {
 	file, err := os.Open("html" + req.RequestURI)
 	defer file.Close()
 	if err != nil {
-		fmt.Println("Error while opening css: ", err.Error())
+		// TODO solve missing fonts
+		// fmt.Println("Error while opening css: ", err.Error())
 		rw.WriteHeader(404)
 		return
 	}
@@ -152,61 +138,17 @@ func handleFonts(rw http.ResponseWriter, req *http.Request) {
 	io.Copy(rw, file)
 }
 
-type Config struct {
-	BlogName string
-	Port     string
-}
-
-func readConfig() *Config {
-	// open file
-	file, err := os.Open("config.json")
-	if err != nil {
-		panic("Can't read config.json")
-	}
-
-	// read json, unmarshal and return
-	cfg := Config{}
-	bytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		panic("Error while reading config.json")
-	}
-	if json.Unmarshal(bytes, &cfg) != nil {
-		panic("The syntax of config.json is invalid")
-	}
-	return &cfg
-}
-
-func createConfig() {
-	// open file
-	file, err := os.Create("config.json")
-	if err != nil {
-		panic("Failed to create config.json")
-	}
-
-	// default configuration file
-	cfg := Config{
-		BlogName: "My blog",
-		Port:     "::8080",
-	}
-
-	// marshal json and save
-	bytes, _ := json.MarshalIndent(cfg, "", "\t")
-	_, err = file.Write(bytes)
-	if err != nil {
-		panic("Failed to write config.json")
-	}
-
+// Generic 404 page, for use by other handlers in cases of invalid URL
+// TODO make nicer 404 page
+func handle404(rw http.ResponseWriter, _ *http.Request) {
+	// better than nothing, i guess
+	rw.WriteHeader(404)
+	fmt.Fprintf(rw, "Error 404: Not Found\n")
 }
 
 func main() {
-
-	// check if config does exist, and if it doesn't, create a new one
-	if file, err := os.Open("config.json"); err != nil {
-		_ = file.Close()
-		createConfig()
-	}
-
-	cfg := readConfig()
+	// get the config
+	cfg := NewConfig()
 
 	// init
 	articles = make([]*Article, 0, 10)
@@ -215,11 +157,6 @@ func main() {
 	// prepare data for Views
 	blogInfo = BlogInfo{
 		Name: cfg.BlogName,
-	}
-
-	indexView = &IndexView{
-		Info:     blogInfo,
-		Articles: &articles,
 	}
 
 	// some garbage articles for testing
@@ -243,7 +180,7 @@ func main() {
 	mux.HandleFunc("/fonts/", handleFonts)
 
 	// start the web server
-	if err := http.ListenAndServe(cfg.Port, mux); err != nil {
+	if err := http.ListenAndServe(cfg.ListenOn, mux); err != nil {
 		fmt.Println("Error while starting web server:", err.Error())
 	}
 }

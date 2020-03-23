@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{.Info.Name}}</title>
+    <title>{{ .Info.Name }}</title>
 
     <!-- purecss -->
     <link rel="stylesheet" href="css/pure/pure.css"/>
@@ -22,24 +22,30 @@
 <body>
 <div class="pure-g" id="main">
     <div class="pure-u-5-6 pure-u-sm-4-5 pure-u-md-3-5 pure-u-lg-1-2 pure-u-xl-5-12" id="content">
-        <h1><a href="/">{{.Info.Name}}</a></h1>
-        {{range $key, $value := .Articles}}
-        <div id="article">
-            <h2>{{$value.Name}}</h2>
-            <p>{{$value.Content}}</p>
-            <div class="pure-g" id="read_more">
-                <div class="pure-u">
-                    <a href="article/{{$key}}">Read more...</a>
+        <h1><a href="/">{{ .Info.Name }}</a></h1>
+        {{ range $key, $value := .Articles }}
+            <div id="article">
+                <h2>{{ $value.Name }}</h2>
+                <p>{{ $value.Content }}</p>
+                <div class="pure-g" id="read_more">
+                    <div class="pure-u">
+                        <a href="article/{{ $key }}">Read more...</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        {{end}}
+        {{ end }}
         <div class="pure-g" id="navigation-page">
             <div class="pure-u-1-3" id="navigation-page-last">
-                <a href="/" >< Last</a>
+                {{/* if page is not equal 1, show the last button */}}
+                {{ if ne .Page 1 }}
+                    <a href="{{.LastPage}}">< Last</a>
+                {{ end }}
             </div>
             <div class="pure-u-1-3" id="navigation-page-next">
-                <a href="/">Next ></a>
+                {{/* if page is not equal to maxpage, don't show the next button */}}
+                {{ if ne .Page .MaxPage }}
+                    <a href="{{.NextPage}}">Next ></a>
+                {{ end }}
             </div>
         </div>
     </div>
