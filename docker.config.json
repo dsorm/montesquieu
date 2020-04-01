@@ -1,0 +1,5 @@
+{
+  "BlogName": "My blog",
+  "ListenOn": ":80",
+  "DBType": "sqlite"
+}
