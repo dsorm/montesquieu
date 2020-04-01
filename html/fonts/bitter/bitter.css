@@ -1,0 +1,24 @@
+@font-face {
+    font-family: Bitter;
+    font-weight: normal;
+    src: url("Bitter-Regular.woff") format("woff")
+}
+
+@font-face {
+    font-family: Bitter;
+    font-weight: bold;
+    src: url("Bitter-Bold.woff") format("woff")
+}
+
+@font-face {
+    font-family: Bitter;
+    font-weight: bold;
+    font-style: italic;
+    src: url("Bitter-BoldItalic.woff") format("woff")
+}
+
+@font-face {
+    font-family: Bitter;
+    font-style: italic;
+    src: url("Bitter-Italic.woff") format("woff")
+}
