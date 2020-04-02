@@ -103,7 +103,9 @@ func handle404(rw http.ResponseWriter, _ *http.Request) {
 }
 
 func main() {
+	fmt.Println("Goblog starting...")
 	// get the config
+	fmt.Println("Loading config...")
 	var err error
 	cfg, err = NewConfig()
 	if err != nil {
@@ -112,6 +114,7 @@ func main() {
 	}
 
 	// init
+	fmt.Println("Initializing ArticleStore...")
 	err = cfg.ArticleStore.Init(nil, cfg)
 	if err != nil {
 		fmt.Println("An error has happeneed while initializing ArticleStore: ", err.Error())
@@ -124,6 +127,7 @@ func main() {
 	}
 
 	// parse and load all templates
+	fmt.Println("Parsing templates...")
 	templates = template.Must(template.ParseFiles("html/index.gohtml", "html/article.gohtml")).Templates()
 
 	// register all controllers
@@ -133,6 +137,7 @@ func main() {
 	mux.HandleFunc("/css/", handleCss)
 	mux.HandleFunc("/fonts/", handleFonts)
 
+	fmt.Println("All ok!")
 	fmt.Println("Server starting at port", cfg.ListenOn)
 
 	// start the web server
