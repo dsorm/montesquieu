@@ -1,5 +1,11 @@
 {
   "BlogName": "My blog",
+  "ArticlesPerPage": "5",
   "ListenOn": ":80",
-  "DBType": "sqlite"
+  "ArticleStore": "mock",
+  "ArticleStoreHost": "",
+  "ArticleStoreDB": "",
+  "ArticleStoreUser": "",
+  "ArticleStorePassword": "",
+  "CachingEngine": "off"
 }
