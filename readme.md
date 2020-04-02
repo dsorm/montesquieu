@@ -1,7 +1,7 @@
 # project goblog (working name)
 a CS50 final project, and yeah, I know, the name's really bad
 
-it doesn't really have any functionality at the moment, it uses a mockup backend at the moment 
+it doesn't really have any functionality at the moment, it uses a mockup backend now
 
 ## How to use
 ### Without Docker on Linux or similar:
