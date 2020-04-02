@@ -1,6 +1,8 @@
 # project goblog (working name)
 a CS50 final project, and yeah, I know, the name's really bad
 
+it doesn't really have any functionality at the moment, it's uses a mockup backend right now
+
 ## How to use
 ### Without Docker on Linux or similar:
 - Make sure you have a recent version of go toolchain installed
@@ -8,6 +10,7 @@ a CS50 final project, and yeah, I know, the name's really bad
 - Install dependencies using `go get ./..` within the directory
 - Build the executable using `go build -o run .`
 - Run the executable: `./run`
+- Config.json with default settings will be made on first startup, you can change any of the settings and restart
 ### Without Docker on Windows:
 - Same as on Linux, just instead of `go build -o run .` use  `go build -o run.exe` and start `run.exe` instead of doing `./run`
 ### With Docker:

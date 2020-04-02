@@ -2,11 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"unicode/utf8"
 )
 
+// "parsed" config that's served to the app
 type Config struct {
 	// Blog's name
 	BlogName string
@@ -15,13 +18,85 @@ type Config struct {
 	ListenOn string
 
 	/*
-	 Type of database
-	 Currently only 'sqlite' is supported
+	 How many articles should be displayed on one index page
+	 While technically there's a limit of 2^64 articles on page
+	 if you really hate your ArticleStore (and internet connections,
+	 browsers, etc.), we recommend sticking to something like 5
+	 articles
 	*/
-	DBType string
+	ArticlesPerPage uint64
+
+	/*
+	 Type of database
+	 Currently only 'mock' and `postgres` is supported
+	*/
+	ArticleStore ArticleStore
+
+	/*
+	 Login info for ArticleStore driver, if needed
+	 Postgres: requires all filled out
+	 Mock: ignores all the fields
+	*/
+	ArticleStoreHost     string
+	ArticleStoreDB       string
+	ArticleStoreUser     string
+	ArticleStorePassword string
+
+	/*
+	 Type of caching engine used between the app and the store
+	 Currently only 'internal' or 'off' is supported
+	*/
+	CachingEngine ArticleStore
 }
 
-func (cfg *Config) verifyConfig() string {
+// "unparsed" config that's served from and to the user
+type ConfigFile struct {
+	BlogName             string
+	ArticlesPerPage      string
+	ListenOn             string
+	ArticleStore         string
+	ArticleStoreHost     string
+	ArticleStoreDB       string
+	ArticleStoreUser     string
+	ArticleStorePassword string
+	CachingEngine        string
+}
+
+// parses ConfigFile from user into Config for the app
+// it's assumed that ConfigFile is verified and correct
+func (cfg *ConfigFile) parseFile() *Config {
+	parsedCfg := &Config{
+		BlogName: cfg.BlogName,
+		ListenOn: cfg.ListenOn,
+		//ArticlesPerPage:	  0,
+		//ArticleStore:       nil,
+		ArticleStoreHost:     cfg.ArticleStoreHost,
+		ArticleStoreDB:       cfg.ArticleStoreDB,
+		ArticleStoreUser:     cfg.ArticleStoreUser,
+		ArticleStorePassword: cfg.ArticleStorePassword,
+		//CachingEngine:      nil,
+	}
+
+	if cfg.ArticleStore == "mock" {
+		store := MockStore{}
+		parsedCfg.ArticleStore = &store
+	}
+
+	if cfg.ArticleStore == "postgres" {
+		store := PostgresStore{}
+		parsedCfg.ArticleStore = &store
+	}
+
+	// convert ArticlesPerPage to int
+	preconvert, _ := strconv.ParseInt(cfg.ArticlesPerPage, 10, 64)
+	parsedCfg.ArticlesPerPage = uint64(preconvert)
+
+	// TODO deal with CachingEngine
+	return parsedCfg
+}
+
+// verifies config from user; if the string is not null, there's at least one error in the config
+func (cfg *ConfigFile) verifyConfig() string {
 	str := ""
 
 	// verify blogname
@@ -37,23 +112,49 @@ func (cfg *Config) verifyConfig() string {
 		str += "ListenOn can't be empty\n"
 	}
 
-	// verify database type
-	if cfg.DBType == "" {
-		str += "DBType can't be empty\n"
+	// verify articles per page
+	if num, err := strconv.Atoi(cfg.ArticlesPerPage); err != nil || num <= 0 {
+		str += "ArticlesPerPage has to be a valid positive integer\n"
 	}
 
-	validType := false
+	// verify database type
+	if cfg.ArticleStore == "" {
+		str += "ArticleStore can't be empty\n"
+	} else {
+		validType := false
 
-	validType = cfg.DBType == "sqlite"
+		if cfg.ArticleStore == "mock" {
+			validType = true
+		}
 
-	if !validType {
-		str += "DBType is invalid\n"
+		if !validType {
+			str += "ArticleStore is invalid\n"
+		}
+	}
+
+	// verify caching engine
+	if cfg.CachingEngine == "" {
+		str += "CachingEngine can't be empty\n"
+	} else {
+		validType := false
+
+		if cfg.CachingEngine == "internal" {
+			validType = true
+		}
+
+		if cfg.CachingEngine == "off" {
+			validType = true
+		}
+
+		if !validType {
+			str += "CachingEngine is invalid\n"
+		}
 	}
 
 	return str
 }
 
-func (cfg *Config) readConfig() {
+func (cfg *ConfigFile) readConfig() {
 	// open file
 	file, err := os.Open("config.json")
 	if err != nil {
@@ -70,7 +171,7 @@ func (cfg *Config) readConfig() {
 	}
 }
 
-func (cfg *Config) createConfig() {
+func (cfg *ConfigFile) createConfig() {
 	// open file
 	file, err := os.Create("config.json")
 	if err != nil {
@@ -80,7 +181,9 @@ func (cfg *Config) createConfig() {
 	// default configuration file
 	cfg.BlogName = "My blog"
 	cfg.ListenOn = ":8080"
-	cfg.DBType = "sqlite"
+	cfg.ArticleStore = "mock"
+	cfg.CachingEngine = "off"
+	cfg.ArticlesPerPage = "5"
 
 	// marshal json and save
 	bytes, _ := json.MarshalIndent(cfg, "", "\t")
@@ -91,8 +194,8 @@ func (cfg *Config) createConfig() {
 
 }
 
-func NewConfig() *Config {
-	cfg := &Config{}
+func NewConfig() (*Config, error) {
+	cfg := &ConfigFile{}
 
 	// check if config does exist, and if it doesn't, create a new one
 	if file, err := os.Open("config.json"); err != nil {
@@ -102,10 +205,13 @@ func NewConfig() *Config {
 
 	// read and verify the config
 	cfg.readConfig()
-	errors := cfg.verifyConfig()
-	if len(errors) != 0 {
-		panic(errors)
+	errs := cfg.verifyConfig()
+
+	// if any errors were found, lets return the errors
+	if len(errs) != 0 {
+		return nil, errors.New(errs)
 	}
 
-	return cfg
+	// parse and return config
+	return cfg.parseFile(), nil
 }

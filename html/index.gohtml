@@ -29,15 +29,15 @@
                 <p>{{ $value.Content }}</p>
                 <div class="pure-g" id="read_more">
                     <div class="pure-u">
-                        <a href="article/{{ $key }}">Read more...</a>
+                        <a href="article/{{ $value.ID }}">Read more...</a>
                     </div>
                 </div>
             </div>
         {{ end }}
         <div class="pure-g" id="navigation-page">
             <div class="pure-u-1-3" id="navigation-page-last">
-                {{/* if page is not equal 1, show the last button */}}
-                {{ if ne .Page 1 }}
+                {{/* if page is not equal 0, show the last button */}}
+                {{ if ne .Page 0 }}
                     <a href="{{.LastPage}}">< Last</a>
                 {{ end }}
             </div>

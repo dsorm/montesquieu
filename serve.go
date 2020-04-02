@@ -14,11 +14,13 @@ type BlogInfo struct {
 	Name string
 }
 
-var articles []*Article
+var articles []Article
 
 var templates []*template.Template
 
 var blogInfo BlogInfo
+
+var cfg *Config
 
 const (
 	templateIndex = iota
@@ -102,26 +104,24 @@ func handle404(rw http.ResponseWriter, _ *http.Request) {
 
 func main() {
 	// get the config
-	cfg := NewConfig()
+	var err error
+	cfg, err = NewConfig()
+	if err != nil {
+		fmt.Printf("While verifying the config, some errors in config.json were found. Please fix them before running Goblog:\n%s", err.Error())
+		return
+	}
 
 	// init
-	articles = make([]*Article, 0, 10)
+	err = cfg.ArticleStore.Init(nil, cfg)
+	if err != nil {
+		fmt.Println("An error has happeneed while initializing ArticleStore: ", err.Error())
+	}
 	templates = make([]*template.Template, 0, 10)
 
 	// prepare data for Views
 	blogInfo = BlogInfo{
 		Name: cfg.BlogName,
 	}
-
-	// some garbage articles for testing
-	articles = append(articles, &Article{
-		Name:    "Lorem ipsum",
-		Content: "... dolor sir amet :)",
-	})
-	articles = append(articles, &Article{
-		Name:    "Go Templating Engine",
-		Content: `<b>Go’s html/template package</b> provides a <i>rich templating language</i> for HTML templates. It is mostly used in web applications to display data in a structured way in a client’s browser. One great benefit of Go’s templating language is the automatic escaping of data. There is no need to worry about XSS attacks as Go parses the HTML template and escapes all inputs before displaying it to the browser.`,
-	})
 
 	// parse and load all templates
 	templates = template.Must(template.ParseFiles("html/index.gohtml", "html/article.gohtml")).Templates()
@@ -132,6 +132,8 @@ func main() {
 	mux.HandleFunc("/article/", handleArticle)
 	mux.HandleFunc("/css/", handleCss)
 	mux.HandleFunc("/fonts/", handleFonts)
+
+	fmt.Println("Server starting at port", cfg.ListenOn)
 
 	// start the web server
 	if err := http.ListenAndServe(cfg.ListenOn, mux); err != nil {
