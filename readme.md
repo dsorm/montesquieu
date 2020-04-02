@@ -1,7 +1,7 @@
 # project goblog (working name)
 a CS50 final project, and yeah, I know, the name's really bad
 
-it doesn't really have any functionality at the moment, it's uses a mockup backend right now
+it doesn't really have any functionality at the moment, it uses a mockup backend at the moment 
 
 ## How to use
 ### Without Docker on Linux or similar:
@@ -14,6 +14,7 @@ it doesn't really have any functionality at the moment, it's uses a mockup backe
 ### Without Docker on Windows:
 - Same as on Linux, just instead of `go build -o run .` use  `go build -o run.exe` and start `run.exe` instead of doing `./run`
 ### With Docker:
+- It's recomended to run everything as sudo/root, since only root can map ports below 1024
 - Clone master / download a [release] of goblog
 - Change the docker.config.json according to your needs first (except for ListenOn)
 - Run this command within the directory to create docker image: `docker build -t goblog .`
