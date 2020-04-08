@@ -1,17 +1,19 @@
-package main
+package handlers
 
 import (
 	"fmt"
+	"github.com/david-sorm/goblog/article"
+	"github.com/david-sorm/goblog/globals"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
 type IndexView struct {
-	Info *BlogInfo
+	BlogName string
 
 	// a list of articles which should be displayed on the page
-	Articles []Article
+	Articles []article.Article
 
 	// the last page, if there's one, used for the last button
 	// essentially Page - 1
@@ -43,16 +45,16 @@ func countMaxPage(NumOfArticles uint64, ArticlesPerPage uint64) uint64 {
 }
 
 // executes
-func handleIndex(rw http.ResponseWriter, req *http.Request) {
+func HandleIndex(rw http.ResponseWriter, req *http.Request) {
 	uri := req.URL.RequestURI()
 	indexView := IndexView{
-		Info: &blogInfo,
+		BlogName: globals.Cfg.BlogName,
 
 		// first page if we don't specify below
 		Page: 0,
 
 		// -1 since pages are zero-indexed
-		MaxPage: countMaxPage(cfg.ArticleStore.GetArticleNumber(), cfg.ArticlesPerPage),
+		MaxPage: countMaxPage(globals.Cfg.ArticleStore.GetArticleNumber(), globals.Cfg.ArticlesPerPage),
 	}
 	// get rid of the '/' at the beginning
 	uri = strings.TrimPrefix(uri, "/")
@@ -76,7 +78,7 @@ func handleIndex(rw http.ResponseWriter, req *http.Request) {
 			}
 		} else {
 			// if this is BS, send a 404
-			handle404(rw, req)
+			Handle404(rw, req)
 			return
 		}
 	}
@@ -86,15 +88,15 @@ func handleIndex(rw http.ResponseWriter, req *http.Request) {
 	indexView.NextPage = indexView.Page + 1
 
 	// insert the actual articles into page
-	indexView.Articles = cfg.ArticleStore.LoadArticlesForIndex(indexView.Page)
+	indexView.Articles = globals.Cfg.ArticleStore.LoadArticlesForIndex(indexView.Page)
 
 	// execute template
-	if err := templates[templateIndex].Execute(rw, indexView); err != nil {
+	if err := globals.Templates[globals.TemplateIndex].Execute(rw, indexView); err != nil {
 		fmt.Println("Error while parsing template:", err.Error())
 	}
 }
 
 // TODO don't just display the same articles on every page
-func prepareArticles(a []*Article, page int) []*Article {
+func prepareArticles(a []*article.Article, page int) []*article.Article {
 	return a
 }

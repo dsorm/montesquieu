@@ -1,6 +1,16 @@
-package main
+package store
+
+import "github.com/david-sorm/goblog/article"
 
 // import "github.com/lib/pq"
+
+type ArticleStoreConfig struct {
+	Host                 string
+	Database             string
+	Username             string
+	Password             string
+	ArticlesPerIndexPage uint64
+}
 
 type ArticleStore interface {
 
@@ -9,17 +19,17 @@ type ArticleStore interface {
 	 Non-nil response means an error has occurred; error will be shown in console
 	 If the first argument is nil, it means the store shouldn't monitor changes
 	 If a function is passed, it should be called every time a change is detected
-	 In the second parameter, *Config is passed, which includes parsed config.json,
-	 mainly for database credentials if needed
+	 The second parameter is a config that contains relevant parsed data from config
+	 file
 	*/
-	Init(f func(), cfg *Config) error
+	Init(f func(), cfg ArticleStoreConfig) error
 
 	/*
 	 Should return articles for this index page
 	 Index pages start at 0, the number of articles per page is defined in
 	 Config.ArticlesPerPage
 	*/
-	LoadArticlesForIndex(page uint64) []Article
+	LoadArticlesForIndex(page uint64) []article.Article
 
 	/*
 	 Should return the article by the unique ID, obviously the ID in Article will be
@@ -27,7 +37,7 @@ type ArticleStore interface {
 	 If an article with the ID can't be found, the second return parameter should return
 	 false, else if an article was found, return true
 	*/
-	GetArticleByID(ID string) (Article, bool)
+	GetArticleByID(ID string) (article.Article, bool)
 
 	/*
 	 Should return the total number of articles, used for determining how many

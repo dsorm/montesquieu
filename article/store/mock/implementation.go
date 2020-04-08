@@ -1,26 +1,27 @@
-package main
+package mock
 
-import "strconv"
+import (
+	"github.com/david-sorm/goblog/article"
+	"github.com/david-sorm/goblog/article/store"
+	"strconv"
+)
 
 // Mock implementation of ArticleStore
 type MockStore struct {
-
-	// save the cfg pointer for later use
-	cfg *Config
+	cfg store.ArticleStoreConfig
 
 	// stores articles sorted from most recent[0] to oldest[...]
-	articlesByTimestamp []Article
+	articlesByTimestamp []article.Article
 
 	// stores articles indexed by their IDs
-	articlesByID map[string]Article
+	articlesByID map[string]article.Article
 }
 
-func (ms *MockStore) LoadArticlesForIndex(page uint64) []Article {
+func (ms *MockStore) LoadArticlesForIndex(page uint64) []article.Article {
 	// return articles starting from
-	starti := ms.cfg.ArticlesPerPage * page
+	starti := ms.cfg.ArticlesPerIndexPage * page
 	// and ending with these...
-	endi := starti + ms.cfg.ArticlesPerPage
-
+	endi := starti + ms.cfg.ArticlesPerIndexPage
 	if endi > ms.GetArticleNumber() {
 		endi = ms.GetArticleNumber()
 	}
@@ -28,7 +29,7 @@ func (ms *MockStore) LoadArticlesForIndex(page uint64) []Article {
 	return ms.articlesByTimestamp[starti:endi]
 }
 
-func (ms *MockStore) GetArticleByID(ID string) (Article, bool) {
+func (ms *MockStore) GetArticleByID(ID string) (article.Article, bool) {
 	// val stores the value, if there's none, it simply stores a zeroed Article
 	// exists stores boolean value meaning the existence of an article with the ID
 	val, exists := ms.articlesByID[ID]
@@ -40,17 +41,19 @@ func (ms *MockStore) GetArticleNumber() uint64 {
 	return uint64(num)
 }
 
-func (ms *MockStore) Init(f func(), cfg *Config) error {
+func (ms *MockStore) Init(f func(), cfg store.ArticleStoreConfig) error {
 	// doesn't implement notify at all, since MockStore cannot change contents at runtime
 
-	// prepare the struct
+	// copy cfg
 	ms.cfg = cfg
-	ms.articlesByTimestamp = make([]Article, 0, 0)
-	ms.articlesByID = make(map[string]Article)
+
+	// prepare the struct
+	ms.articlesByTimestamp = make([]article.Article, 0, 0)
+	ms.articlesByID = make(map[string]article.Article)
 
 	// lets fill articles with some mock articles
-	ms.articlesByTimestamp = append(ms.articlesByTimestamp, Article{
-		timestamp: 1585828351,
+	ms.articlesByTimestamp = append(ms.articlesByTimestamp, article.Article{
+		Timestamp: 1585828351,
 		ID:        "welcome",
 		Name:      "Welcome to your brand new Goblog installation!",
 		Content:   "Thank you for choosing Goblog! You should consider <b>changing the config.json</b>, since now Goblog only displays mock content, and you won't be able to make articles until you change ArticleStore value to a real store.",
@@ -58,8 +61,8 @@ func (ms *MockStore) Init(f func(), cfg *Config) error {
 
 	// lets generate another mock articles
 	for i := 1; i < 11; i++ {
-		ms.articlesByTimestamp = append(ms.articlesByTimestamp, Article{
-			timestamp: ms.articlesByTimestamp[i-1].timestamp - 1,
+		ms.articlesByTimestamp = append(ms.articlesByTimestamp, article.Article{
+			Timestamp: ms.articlesByTimestamp[i-1].Timestamp - 1,
 			ID:        "article" + strconv.Itoa(i+1),
 			Name:      "Article " + strconv.Itoa(i+1),
 			Content:   "Lorem ipsum dolor sit amet",
