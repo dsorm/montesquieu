@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/david-sorm/goblog/article"
+	articlePkg "github.com/david-sorm/goblog/article"
 	"github.com/david-sorm/goblog/globals"
 	templates "github.com/david-sorm/goblog/template"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 
 type ArticleView struct {
 	BlogName string
-	Article  article.Article
+	Article  articlePkg.Article
 	RootURL  string
 }
 

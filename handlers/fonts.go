@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+//noinspection SpellCheckingInspection
 func HandleFonts(rw http.ResponseWriter, req *http.Request) {
 
 	// get the file
