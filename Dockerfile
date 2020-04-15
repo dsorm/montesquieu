@@ -15,6 +15,8 @@ COPY docker.config.json /opt/goblog/config.json
 WORKDIR /opt/goblog
 RUN go get -d -v ./...
 RUN go build -o run .
+RUN chmod 777 run
+RUN ["chmod","+x","run"]
 
 # open port
 EXPOSE 80

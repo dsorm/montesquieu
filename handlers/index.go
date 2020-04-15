@@ -95,8 +95,3 @@ func HandleIndex(rw http.ResponseWriter, req *http.Request) {
 		fmt.Println("Error while parsing template:", err.Error())
 	}
 }
-
-// TODO don't just display the same articles on every page
-func prepareArticles(a []*article.Article, page int) []*article.Article {
-	return a
-}
