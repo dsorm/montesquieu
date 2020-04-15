@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/david-sorm/goblog/article"
 	"github.com/david-sorm/goblog/globals"
+	templates "github.com/david-sorm/goblog/template"
 	"net/http"
 	"strconv"
 	"strings"
@@ -91,7 +92,7 @@ func HandleIndex(rw http.ResponseWriter, req *http.Request) {
 	indexView.Articles = globals.Cfg.ArticleStore.LoadArticlesForIndex(indexView.Page)
 
 	// execute template
-	if err := globals.Templates[globals.TemplateIndex].Execute(rw, indexView); err != nil {
+	if err := templates.Store[templates.Index].Execute(rw, indexView); err != nil {
 		fmt.Println("Error while parsing template:", err.Error())
 	}
 }

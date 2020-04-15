@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/david-sorm/goblog/article"
 	"github.com/david-sorm/goblog/globals"
+	templates "github.com/david-sorm/goblog/template"
 	"net/http"
 	"strings"
 )
@@ -37,7 +38,7 @@ func HandleArticle(rw http.ResponseWriter, req *http.Request) {
 		Article:  article,
 		RootURL:  "//" + req.Host + "/",
 	}
-	if err := globals.Templates[globals.TemplateArticle].Execute(rw, articleView); err != nil {
+	if err := templates.Store[templates.Article].Execute(rw, articleView); err != nil {
 		fmt.Println("Error while parsing template:", err.Error())
 	}
 }
