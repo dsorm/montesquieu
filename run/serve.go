@@ -6,7 +6,7 @@ import (
 	"github.com/david-sorm/goblog/config"
 	"github.com/david-sorm/goblog/globals"
 	"github.com/david-sorm/goblog/handlers"
-	"html/template"
+	templates "github.com/david-sorm/goblog/template"
 	"net/http"
 )
 
@@ -32,10 +32,8 @@ func Main() {
 	}
 	err = globals.Cfg.ArticleStore.Init(func() {}, asCfg)
 	if err != nil {
-		fmt.Println("An error has happeneed while initializing ArticleStore: ", err.Error())
+		fmt.Println("An error has happened while initializing ArticleStore: ", err.Error())
 	}
-
-	globals.Templates = make([]*template.Template, 0, 10)
 
 	// prepare data for Views
 	globals.BlogInfo = globals.BlogInformation{
@@ -44,7 +42,7 @@ func Main() {
 
 	// parse and load all templates
 	fmt.Println("Parsing templates...")
-	globals.Templates = template.Must(template.ParseFiles("html/index.gohtml", "html/article.gohtml")).Templates()
+	templates.Load()
 
 	// register all controllers
 	mux := http.NewServeMux()

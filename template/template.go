@@ -32,6 +32,7 @@ func Load() {
 	temp, err := template.ParseFiles(templatePaths...)
 	if err != nil {
 		fmt.Println("An error has happened while parsing templates:", err.Error())
+		return
 	}
 	Store = temp.Templates()
 
