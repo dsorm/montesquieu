@@ -1,25 +1,48 @@
-# use golang with debian buster as base image
-FROM golang:buster
+# use ubuntu focal as base image
+FROM ubuntu:focal
+
+# make sure we're root
+USER root
+
+# download apt package info
+RUN apt-get update
+
+# get build dependencies
+# get go toolchain
+WORKDIR /tmp
+RUN apt-get install wget unzip -y
+RUN wget "https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz"
+RUN tar -C /usr/local -xzf go1.14.2.linux-amd64.tar.gz
+RUN export PATH=$PATH:/usr/local/go/bin
+RUN bash
+RUN rm /tmp/go1.14.2.linux-amd64.tar.gz
+
+
+# download purecss
+WORKDIR /home/root/go/src/github.com/david-sorm/goblog/
+COPY purecssInstall.sh purecssInstall.sh
+RUN chmod +x purecssInstall.sh
+RUN ./purecssInstall.sh
 
 # copy source files
-COPY . /opt/goblog/.
+COPY . .
 
 # delete useless crap
-RUN rm /opt/goblog/readme.md || true
-
-# delete config.json, if exists, and copy over the docker config file
-RUN rm /opt/goblog/config.json || true
-COPY docker.config.json /opt/goblog/config.json
+RUN rm readme.md || true
+RUN rm config.json || true
 
 # get dependencies and compile
-WORKDIR /opt/goblog
-RUN go get -d -v ./...
-RUN go build -o run .
-RUN chmod 777 run
-RUN ["chmod","+x","run"]
+RUN /usr/local/go/bin/go get -d -v ./...
+RUN /usr/local/go/bin/go build -o serve .
+RUN chmod +x /home/root/go/src/github.com/david-sorm/goblog/run
+
+# delete build dependencies
+RUN rm -r /usr/local/go/*
+RUN rmdir /usr/local/go
+RUN apt-get autoremove -y
 
 # open port
-EXPOSE 80
+EXPOSE 8080
 
 # run
-CMD ["/opt/goblog/run"]
+CMD su root -c /home/root/go/src/github.com/david-sorm/goblog/serve

@@ -18,6 +18,6 @@ it doesn't really have any functionality at the moment, it uses a mockup backend
 - Clone master / download a [release] of goblog
 - Change the docker.config.json according to your needs first (except for ListenOn)
 - Run this command within the directory to create docker image: `docker build -t goblog .`
-- Afterward, change `<your_port>` to your own preffered port and run this command to start a container with the goblog image we created earlier: `docker run -d -p 80:<your_port> --name goblog localhost/goblog` 
+- Afterward, change `<your_port>` to your own preffered port and run this command to start a container with the goblog image we created earlier: `docker run -d -p 8080:<your_port> --name goblog localhost/goblog` 
 
 [release]: https://github.com/david-sorm/goblog/releases
