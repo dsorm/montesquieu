@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -10,7 +11,7 @@ import (
 )
 
 // verifies config from user; if the string is not null, there's at least one error in the config
-func (cfg *ConfigFile) verifyConfig() string {
+func (cfg *File) verifyConfig() string {
 	str := ""
 
 	// verify blogname
@@ -68,7 +69,7 @@ func (cfg *ConfigFile) verifyConfig() string {
 	return str
 }
 
-func (cfg *ConfigFile) readConfig() {
+func (cfg *File) readConfig() {
 	// open file
 	file, err := os.Open("config.json")
 	if err != nil {
@@ -85,7 +86,7 @@ func (cfg *ConfigFile) readConfig() {
 	}
 }
 
-func (cfg *ConfigFile) createConfig() {
+func (cfg *File) createConfig() {
 	// open file
 	file, err := os.Create("config.json")
 	if err != nil {
@@ -108,12 +109,16 @@ func (cfg *ConfigFile) createConfig() {
 
 }
 
+//noinspection ALL
 func NewConfig() (*Config, error) {
-	cfg := &ConfigFile{}
+	cfg := &File{}
 
 	// check if config does exist, and if it doesn't, create a new one
 	if file, err := os.Open("config.json"); err != nil {
-		_ = file.Close()
+		err = file.Close()
+		if err != nil {
+			fmt.Println("Error while opening config")
+		}
 		cfg.createConfig()
 	}
 

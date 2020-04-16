@@ -6,20 +6,20 @@ import (
 )
 
 // Postgres implementation of ArticleStore
-type PostgresStore struct{}
+type Store struct{}
 
-func (p *PostgresStore) GetArticleNumber() uint64 {
+func (p *Store) GetArticleNumber() uint64 {
 	panic("implement me")
 }
 
-func (p *PostgresStore) Init(f func(), cfg store.ArticleStoreConfig) error {
+func (p *Store) Init(f func(), cfg store.ArticleStoreConfig) error {
 	panic("implement me")
 }
 
-func (p *PostgresStore) LoadArticlesForIndex(page uint64) []article.Article {
+func (p *Store) LoadArticlesForIndex(page uint64) []article.Article {
 	panic("implement me")
 }
 
-func (p *PostgresStore) GetArticleByID(ID string) (article.Article, bool) {
+func (p *Store) GetArticleByID(ID string) (article.Article, bool) {
 	panic("implement me")
 }

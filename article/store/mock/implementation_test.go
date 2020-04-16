@@ -186,7 +186,7 @@ func TestMockStore_GetArticleByID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ms := &MockStore{
+			ms := &Store{
 				cfg:                 tt.fields.cfg,
 				articlesByTimestamp: tt.fields.articlesByTimestamp,
 				articlesByID:        tt.fields.articlesByID,
@@ -217,7 +217,7 @@ func TestMockStore_GetArticleNumber(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ms := &MockStore{
+			ms := &Store{
 				cfg:                 tt.fields.cfg,
 				articlesByTimestamp: tt.fields.articlesByTimestamp,
 				articlesByID:        tt.fields.articlesByID,
@@ -253,7 +253,7 @@ func TestMockStore_Init(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ms := &MockStore{
+			ms := &Store{
 				cfg:                 tt.fields.cfg,
 				articlesByTimestamp: tt.fields.articlesByTimestamp,
 				articlesByID:        tt.fields.articlesByID,
@@ -343,7 +343,7 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ms := &MockStore{
+			ms := &Store{
 				cfg:                 tt.fields.cfg,
 				articlesByTimestamp: tt.fields.articlesByTimestamp,
 				articlesByID:        tt.fields.articlesByID,

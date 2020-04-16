@@ -7,7 +7,7 @@ import (
 )
 
 // Mock implementation of ArticleStore
-type MockStore struct {
+type Store struct {
 	cfg store.ArticleStoreConfig
 
 	// stores articles sorted from most recent[0] to oldest[...]
@@ -17,7 +17,7 @@ type MockStore struct {
 	articlesByID map[string]article.Article
 }
 
-func (ms *MockStore) LoadArticlesForIndex(page uint64) []article.Article {
+func (ms *Store) LoadArticlesForIndex(page uint64) []article.Article {
 	// return articles starting from
 	starti := ms.cfg.ArticlesPerIndexPage * page
 	// and ending with these...
@@ -29,19 +29,19 @@ func (ms *MockStore) LoadArticlesForIndex(page uint64) []article.Article {
 	return ms.articlesByTimestamp[starti:endi]
 }
 
-func (ms *MockStore) GetArticleByID(ID string) (article.Article, bool) {
+func (ms *Store) GetArticleByID(ID string) (article.Article, bool) {
 	// val stores the value, if there's none, it simply stores a zeroed Article
 	// exists stores boolean value meaning the existence of an article with the ID
 	val, exists := ms.articlesByID[ID]
 	return val, exists
 }
 
-func (ms *MockStore) GetArticleNumber() uint64 {
+func (ms *Store) GetArticleNumber() uint64 {
 	num := len(ms.articlesByTimestamp)
 	return uint64(num)
 }
 
-func (ms *MockStore) Init(f func(), cfg store.ArticleStoreConfig) error {
+func (ms *Store) Init(_ func(), cfg store.ArticleStoreConfig) error {
 	// doesn't implement notify at all, since MockStore cannot change contents at runtime
 
 	// copy cfg
@@ -74,6 +74,6 @@ func (ms *MockStore) Init(f func(), cfg store.ArticleStoreConfig) error {
 		ms.articlesByID[v.ID] = v
 	}
 
-	// i don't think there's even a remote possibilty of error in this function
+	// i don't think there's even a remote possibility of error in this function
 	return nil
 }

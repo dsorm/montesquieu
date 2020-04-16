@@ -21,12 +21,12 @@ func TestParseArticleStore(t *testing.T) {
 		{
 			name: "mock store",
 			args: args{str: "mock"},
-			want: &mock.MockStore{},
+			want: &mock.Store{},
 		},
 		{
 			name: "postgres store",
 			args: args{str: "postgres"},
-			want: &postgres.PostgresStore{},
+			want: &postgres.Store{},
 		},
 		{
 			name: "invalid store",

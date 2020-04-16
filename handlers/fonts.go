@@ -14,12 +14,16 @@ func HandleFonts(rw http.ResponseWriter, req *http.Request) {
 
 	// get the file
 	file, err := os.Open("html" + req.RequestURI)
-	defer file.Close()
+	if file == nil {
+		// file doesn't exist
+		return
+	}
 	if err != nil {
 		fmt.Println("Error while opening css: ", err.Error())
 		rw.WriteHeader(404)
 		return
 	}
+	defer file.Close()
 
 	// send the content-type header
 	// css
@@ -46,6 +50,13 @@ func HandleFonts(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Length", fileSize)
 
 	// send the file
-	file.Seek(0, 0)
-	io.Copy(rw, file)
+	_, err = file.Seek(0, 0)
+	if err != nil {
+		fmt.Println("Error while sending font file to client: ", err.Error())
+	}
+
+	_, err = io.Copy(rw, file)
+	if err != nil {
+		fmt.Println("Error while sending font file to client: ", err.Error())
+	}
 }

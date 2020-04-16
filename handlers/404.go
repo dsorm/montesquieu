@@ -10,5 +10,9 @@ import (
 func Handle404(rw http.ResponseWriter, _ *http.Request) {
 	// better than nothing, i guess
 	rw.WriteHeader(404)
-	fmt.Fprintf(rw, "Error 404: Not Found\n")
+	_, err := fmt.Fprintf(rw, "Error 404: Not Found\n")
+
+	if err != nil {
+		fmt.Println("Error while writing a 404 response:", err.Error())
+	}
 }
