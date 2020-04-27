@@ -8,4 +8,8 @@ unzip v1.0.1.zip
 cd ..
 mkdir -p html/css/pure
 cp tmp/pure-release-1.0.1/*min.css html/css/pure/.
-rm -r tmp
+
+# don't forget to include copy of PureCSS' license
+cp tmp/pure-release-1.0.1/LICENSE.md html/css/pure/LICENSE.md
+
+#rm -r tmp
