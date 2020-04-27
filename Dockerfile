@@ -13,10 +13,7 @@ WORKDIR /tmp
 RUN apt-get install wget unzip -y
 RUN wget "https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz"
 RUN tar -C /usr/local -xzf go1.14.2.linux-amd64.tar.gz
-RUN export PATH=$PATH:/usr/local/go/bin
-RUN bash
 RUN rm /tmp/go1.14.2.linux-amd64.tar.gz
-
 
 # download purecss
 WORKDIR /home/root/go/src/github.com/david-sorm/goblog/
