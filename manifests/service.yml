@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: "kube"
+    labels:
+        app: "kube"
+spec:
+    type: LoadBalancer
+    ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    selector:
+        app: "kube"
