@@ -1,0 +1,16 @@
+apiVersion : apps/v1beta1
+kind: Deployment
+metadata:
+  name: "kube"
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: "kube"
+    spec:
+      containers:
+        - name: "kube"
+          image: "goblogacr.azurecr.io/kube"
+          ports:
+          - containerPort: 8080
