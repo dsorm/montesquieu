@@ -33,18 +33,18 @@ func (cfg *File) verifyConfig() string {
 	}
 
 	// verify database type
-	if cfg.ArticleStore == "" {
+	validType := false
+	switch cfg.ArticleStore {
+	case "":
 		str += "ArticleStore can't be empty\n"
-	} else {
-		validType := false
+	case "mock":
+		validType = true
+	case "postgres":
+		validType = true
+	}
 
-		if cfg.ArticleStore == "mock" {
-			validType = true
-		}
-
-		if !validType {
-			str += "ArticleStore is invalid\n"
-		}
+	if !validType {
+		str += "ArticleStore is invalid\n"
 	}
 
 	// verify caching engine
