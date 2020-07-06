@@ -44,12 +44,18 @@ func Main() {
 	fmt.Println("Parsing templates...")
 	templates.Load()
 
+	// make FileServer controllers for handling fully static content
+	handleCss := http.FileServer(http.Dir("html/css"))
+	handleFonts := http.FileServer(http.Dir("html/fonts"))
+
 	// register all controllers
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handlers.HandleIndex)
 	mux.HandleFunc("/article/", handlers.HandleArticle)
-	mux.HandleFunc("/css/", handlers.HandleCss)
-	mux.HandleFunc("/fonts/", handlers.HandleFonts)
+
+	// http.StripPrefix is needed for FileServer handlers so the paths work correctly
+	mux.Handle("/css/", http.StripPrefix("/css/", handleCss))
+	mux.Handle("/fonts/", http.StripPrefix("/fonts/", handleFonts))
 
 	fmt.Println("All ok!")
 	fmt.Println("Server starting at port", globals.Cfg.ListenOn)
