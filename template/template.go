@@ -10,6 +10,9 @@ var Store []*template.Template
 var templatePaths = []string{
 	"html/index.gohtml",
 	"html/article.gohtml",
+	"html/adminPanelHeader.gohtml",
+	"html/adminPanelFooter.gohtml",
+	"html/adminPanel.gohtml",
 }
 
 /*
@@ -20,6 +23,9 @@ var templatePaths = []string{
 const (
 	Index = iota
 	Article
+	AdminPanelHeader
+	AdminPanelFooter
+	AdminPanel
 )
 
 // Prepares all templates, not used when unit testing
