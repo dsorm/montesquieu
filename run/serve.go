@@ -53,7 +53,7 @@ func Main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handlers.HandleIndex)
 	mux.HandleFunc("/article/", handlers.HandleArticle)
-	mux.HandleFunc("/admin/panel", handlers.HandleAdminPanel)
+	mux.HandleFunc("/admin/", handlers.HandleAdminPanel)
 
 	// http.StripPrefix is needed for FileServer handlers so the paths work correctly
 	mux.Handle("/css/", http.StripPrefix("/css/", handleCss))

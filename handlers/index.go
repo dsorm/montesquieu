@@ -92,7 +92,8 @@ func HandleIndex(rw http.ResponseWriter, req *http.Request) {
 	indexView.Articles = globals.Cfg.ArticleStore.LoadArticlesForIndex(indexView.Page)
 
 	// execute template
-	if err := templates.Store[templates.Index].Execute(rw, indexView); err != nil {
+
+	if err := templates.Store.Lookup("index.gohtml").Execute(rw, indexView); err != nil {
 		fmt.Println("Error while parsing template:", err.Error())
 	}
 }
