@@ -17,6 +17,10 @@ var requiredTemplates = []string{
 	"adminPanel.gohtml",
 	"adminPanelHeader.gohtml",
 	"adminPanelFooter.gohtml",
+	"adminPanelUsers.gohtml",
+	"adminPanelAuthors.gohtml",
+	"adminPanelAdmins.gohtml",
+	"adminPanelConfiguration.gohtml",
 }
 
 func checkRequiredTemplates() {
@@ -43,14 +47,18 @@ func Load() {
 	}
 
 	// select only files ending with .gohtml
+	fmt.Println("These template files are being loaded:")
 	for _, v := range dirContent {
 		if strings.HasSuffix(v.Name(), ".gohtml") {
 			// don't forget the folder to make it a valid path
 			templateFiles = append(templateFiles, "html/"+v.Name())
+			fmt.Printf("%v; ", v.Name())
 		}
 	}
+	fmt.Println()
 
 	// parse all the selected files
+	fmt.Println("Parsing templates...")
 	Store, err = template.ParseFiles(templateFiles...)
 	if err != nil {
 		fmt.Println("Error while parsing gohtml templates from /html:", err.Error())

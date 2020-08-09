@@ -1,0 +1,57 @@
+{{ template "adminPanelHeader.gohtml"}}
+<div class="pure-g" id="main">
+    <div class="pure-u-5-6 pure-u-sm-4-5 pure-u-md-3-5 pure-u-lg-1-2 pure-u-xl-5-12" id="content">
+        <h1>Configuration</h1>
+        <form class="pure-form" method="post">
+            <fieldset>
+                <legend>General</legend>
+                <div class="pure-control-group">
+                    <label for="blog-name">Blog Name</label>
+                    <input type="text" id="blog-name" value="My blog"/>
+                </div>
+                <div class="pure-control-group">
+                    <label for="blog-name">Articles shown per page</label>
+                    <input type="text" id="blog-name" value="5"/>
+                    <span class="pure-form-message-inline">It's recomended to keep this value under 20 to keep page load times low.</span>
+                </div>
+                <legend>App settings</legend>
+                <div class="pure-control-group">
+                    <label for="blog-name">Port</label>
+                    <input type="text" id="blog-name" value="80"/>
+                    <span class="pure-form-message-inline">The port on which the app listens for incoming HTTP connections</span>
+                </div>
+                <legend>ArticleStore settings</legend>
+                <div class="pure-control-group">
+                    <label for="articlestore">ArticleStore</label>
+                    <select id="articlestore" class="pure-input-1-2">
+                        <option value="mock">Mock (only for testing)</option>
+                        <option value="postgres">Postgres</option>
+                    </select>
+                </div>
+                <div class="pure-control-group">
+                    <label for="as-host">ArticleStore Host</label>
+                    <input type="text" id="as-host" value="localhost"/>
+                </div>
+                <div class="pure-control-group">
+                    <label for="as-db">ArticleStore DB</label>
+                    <input type="text" id="as-db" value="goblog"/>
+                </div>
+                <div class="pure-control-group">
+                    <label for="as-user">ArticleStore User</label>
+                    <input type="text" id="as-user" value="goblog"/>
+                </div>
+                <div class="pure-control-group">
+                    <label for="as-db">ArticleStore Password</label>
+                    <input type="text" id="as-db" placeholder="*secret*"/>
+                    <span class="pure-form-message-inline">This setting won't be changed if left empty</span>
+                </div>
+                <div class="pure-control-group">
+                    <label for="as-ce">CachingEngine</label>
+                    <input type="checkbox" id="as-ce"/>
+                </div>
+                <button class="pure-button pure-button-primary" type="submit">Submit</button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+{{ template "adminPanelFooter.gohtml"}}

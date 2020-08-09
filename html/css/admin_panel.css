@@ -82,3 +82,23 @@
     }
 
 }
+
+/* non-copy-pasted content */
+.admin-content {
+    text-align: -webkit-center;
+}
+
+.pure-control-group {
+    padding-bottom: 1em;
+}
+.pure-control-group label {
+    padding-right: 0.25em;
+}
+.pure-form legend {
+    padding-top: 2em;
+    margin-bottom: 0.75em;
+}
+.pure-control-group .pure-form-message-inline {
+    padding-top: 0.5em;
+    padding-left: 0
+}
