@@ -4,14 +4,23 @@ a CS50 final project, and yeah, I know, the name's really bad
 it doesn't really have any functionality at the moment, it uses a mockup backend now
 
 ## How to use
-### Without Docker on Linux or similar:
+### With Docker & Docker Compose (the recommended way)
+- Use a Linux system (something like Ubuntu/Debian, CentOS/Fedora/RHEL will work) with Docker and Docker Compose installed, there is no official support for other platforms
+- Download a copy of master to your system, open a terminal and navigate to the downloaded folder
+- `docker build -t goblog .`
+- If the command above fails, run it with sudo, so `sudo docker build -t goblog .`
+- You might want to take a look at the docker-compose.yml file and change some environment variables (hint: look at the comments) before continuing
+- `docker-compose up -d`
+- Goblog should be running on localhost:80, unless you changed the port
+- If you want to stop goblog, just run `docker-compose down` from the same folder
+### Without Docker on Linux or similar: (less recommended)
 - Make sure you have a recent version of go toolchain installed
 - Clone master / download a [release] of goblog
 - Install dependencies using `go get ./..` within the directory
 - Build the executable using `go build -o run .`
 - Run the executable: `./run`
 - Config.json with default settings will be made on first startup, you can change any of the settings and restart
-### Without Docker on Windows:
+### Without Docker on Windows: (least recommended)
 - Same as on Linux, just instead of `go build -o run .` use  `go build -o run.exe` and start `run.exe` instead of doing `./run`
 ### With Docker:
 - It's recomended to run everything as sudo/root, since only root can map ports below 1024
