@@ -40,24 +40,30 @@ func Main() {
 		Name: globals.Cfg.BlogName,
 	}
 
-	// parse and load all templates
-	fmt.Println("Parsing templates...")
+	// parse and load all templates in html/
 	templates.Load()
 
 	// make FileServer controllers for handling fully static content
 	handleCss := http.FileServer(http.Dir("html/css"))
 	handleFonts := http.FileServer(http.Dir("html/fonts"))
+	handleJs := http.FileServer(http.Dir("html/js"))
 
 	// register all controllers
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handlers.HandleIndex)
 	mux.HandleFunc("/article/", handlers.HandleArticle)
+	mux.HandleFunc("/admin/panel", handlers.HandleAdminPanel)
+	mux.HandleFunc("/admin/panel/articles", handlers.HandleAdminPanelArticles)
+	mux.HandleFunc("/admin/panel/users", handlers.HandleAdminPanelUsers)
+	mux.HandleFunc("/admin/panel/authors", handlers.HandleAdminPanelAuthors)
+	mux.HandleFunc("/admin/panel/admins", handlers.HandleAdminPanelAdmins)
+	mux.HandleFunc("/admin/panel/configuration", handlers.HandleAdminPanelConfiguration)
 
 	// http.StripPrefix is needed for FileServer handlers so the paths work correctly
 	mux.Handle("/css/", http.StripPrefix("/css/", handleCss))
 	mux.Handle("/fonts/", http.StripPrefix("/fonts/", handleFonts))
+	mux.Handle("/js/", http.StripPrefix("/js/", handleJs))
 
-	fmt.Println("All ok!")
 	fmt.Println("Server starting at port", globals.Cfg.ListenOn)
 
 	// start the web server
