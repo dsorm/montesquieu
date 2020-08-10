@@ -1,0 +1,38 @@
+# an example docker-compose.yml for a fully functional goblog+postgres stack
+# before running execute scripts/docker-build.sh and scripts/docker-compose-prepare.sh
+version: '2'
+services:
+  goblog:
+    image: goblog
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    ports:
+      - '80:80'
+    environment:
+      # change these
+      BLOGNAME: "replace with your own blog name"
+
+      # these don't need to be changed, but feel free to modify them
+      ARTICLESPERPAGE: 5
+      LISTENON: ":80"
+
+      # dont change these, unless you know what you're doing
+      # you can also use the "mock" articlestore, which does almost nothing
+      # postgres currently does nothing too, but it at least pretends it's useful
+      ARTICLESTORE: "postgres"
+      ARTICLESTORE_HOST: "postgres"
+      ARTICLESTORE_DB: "goblog"
+      ARTICLESTORE_USER: "goblog"
+      ARTICLESTORE_PASSWORD: "goblog"
+      CACHINGENGINE: "off"
+
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: goblog
+      POSTGRES_PASSWORD: goblog
+    volumes:
+      - ./docker-data/postgres:/var/lib/postgresql/data
+
