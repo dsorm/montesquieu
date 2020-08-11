@@ -4,6 +4,7 @@ import (
 	cfgLogic "github.com/david-sorm/goblog/article/logic"
 	"github.com/david-sorm/goblog/article/store"
 	"strconv"
+	"strings"
 )
 
 // "parsed" config that's served to the app
@@ -44,6 +45,12 @@ type Config struct {
 	 Currently only 'internal' or 'off' is supported
 	*/
 	CachingEngine store.ArticleStore
+
+	/*
+	 For template-development purposes only, reloads templates without restarting
+	 Recommended setting for production use: off
+	*/
+	HotSwapTemplates bool
 }
 
 // "unparsed" config that's served from and to the user
@@ -57,6 +64,7 @@ type File struct {
 	ArticleStoreUser     string
 	ArticleStorePassword string
 	CachingEngine        string
+	HotSwapTemplates     string
 }
 
 // parses ConfigFile from user into Config for the app
@@ -72,6 +80,7 @@ func (cfg *File) parseFile() *Config {
 		ArticleStoreUser:     cfg.ArticleStoreUser,
 		ArticleStorePassword: cfg.ArticleStorePassword,
 		//CachingEngine:      nil,
+		HotSwapTemplates: strings.ToLower(cfg.HotSwapTemplates) == "yes",
 	}
 
 	// convert ArticlesPerPage to int

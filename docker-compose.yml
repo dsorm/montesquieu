@@ -26,6 +26,7 @@ services:
       ARTICLESTORE_USER: "goblog"
       ARTICLESTORE_PASSWORD: "goblog"
       CACHINGENGINE: "off"
+      HOTSWAPTEMPLATES: "no"
 
   postgres:
     image: postgres

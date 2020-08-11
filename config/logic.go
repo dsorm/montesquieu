@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
 	"unicode/utf8"
 )
 
@@ -64,6 +65,13 @@ func (cfg *File) verifyConfig() string {
 		if !validType {
 			str += "CachingEngine is invalid\n"
 		}
+	}
+
+	// verify live templates
+	if cfg.HotSwapTemplates == "" {
+		str += "HotSwapTemplates can't be empty"
+	} else if !(strings.ToLower(cfg.HotSwapTemplates) == "yes" || strings.ToLower(cfg.HotSwapTemplates) == "no") {
+		str += "HotSwapTemplates can only be either 'yes' or 'no'"
 	}
 
 	return str
