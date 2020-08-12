@@ -26,7 +26,7 @@ func HandleArticle(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	// make sure article with the ID exists
-	article, exists := globals.Cfg.ArticleStore.GetArticleByID(split[2])
+	article, exists := globals.Cfg.Store.GetArticleByID(split[2])
 	if !exists {
 		Handle404(rw, req)
 		return

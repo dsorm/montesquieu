@@ -2,14 +2,14 @@ package mock
 
 import (
 	"github.com/david-sorm/goblog/article"
-	"github.com/david-sorm/goblog/article/store"
+	"github.com/david-sorm/goblog/store"
 	"reflect"
 	"testing"
 )
 
 // struct fields
 type fields struct {
-	cfg                 store.ArticleStoreConfig
+	cfg                 store.StoreConfig
 	articlesByTimestamp []article.Article
 	articlesByID        map[string]article.Article
 }
@@ -17,7 +17,7 @@ type fields struct {
 // makes test struct field content for unit testing
 func getTestFields() fields {
 	f := fields{
-		cfg: store.ArticleStoreConfig{
+		cfg: store.StoreConfig{
 			ArticlesPerIndexPage: 3,
 		},
 		articlesByTimestamp: []article.Article{
@@ -232,7 +232,7 @@ func TestMockStore_GetArticleNumber(t *testing.T) {
 func TestMockStore_Init(t *testing.T) {
 	type args struct {
 		f   func()
-		cfg store.ArticleStoreConfig
+		cfg store.StoreConfig
 	}
 	testFields := getTestFields()
 	tests := []struct {
@@ -267,7 +267,8 @@ func TestMockStore_Init(t *testing.T) {
 
 func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 	type args struct {
-		page uint64
+		from uint64
+		to   uint64
 	}
 
 	testFields := getTestFields()
@@ -280,7 +281,7 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 		{
 			name:   "page 0 (first page) test",
 			fields: testFields,
-			args:   args{page: 0},
+			args:   args{0, 3},
 			want: []article.Article{
 				{
 					Timestamp: 10,
@@ -305,7 +306,7 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 		{
 			name:   "page 1 test",
 			fields: testFields,
-			args:   args{page: 1},
+			args:   args{3, 6},
 			want: []article.Article{
 				{
 					Timestamp: 7,
@@ -330,7 +331,7 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 		{
 			name:   "page 3 (last page) test",
 			fields: testFields,
-			args:   args{page: 3},
+			args:   args{9, 10},
 			want: []article.Article{
 				{
 					Timestamp: 1,
@@ -348,7 +349,7 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 				articlesByTimestamp: tt.fields.articlesByTimestamp,
 				articlesByID:        tt.fields.articlesByID,
 			}
-			if got := ms.LoadArticlesForIndex(tt.args.page); !reflect.DeepEqual(got, tt.want) {
+			if got := ms.LoadArticlesSortedByLatest(tt.args.from, tt.args.to); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("LoadArticlesForIndex() = %v, want %v", got, tt.want)
 			}
 		})

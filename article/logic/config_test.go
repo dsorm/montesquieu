@@ -2,21 +2,21 @@ package logic_test
 
 import (
 	"github.com/david-sorm/goblog/article/logic"
-	"github.com/david-sorm/goblog/article/store"
-	"github.com/david-sorm/goblog/article/store/mock"
-	"github.com/david-sorm/goblog/article/store/postgres"
+	"github.com/david-sorm/goblog/store"
+	"github.com/david-sorm/goblog/store/mock"
+	"github.com/david-sorm/goblog/store/postgres"
 	"reflect"
 	"testing"
 )
 
-func TestParseArticleStore(t *testing.T) {
+func TestParseStore(t *testing.T) {
 	type args struct {
 		str string
 	}
 	tests := []struct {
 		name string
 		args args
-		want store.ArticleStore
+		want store.Store
 	}{
 		{
 			name: "mock store",
@@ -36,8 +36,8 @@ func TestParseArticleStore(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := logic.ParseArticleStore(tt.args.str); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ParseArticleStore() = %v, want %v", got, tt.want)
+			if got := logic.ParseStore(tt.args.str); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ParseStore() = %v, want %v", got, tt.want)
 			}
 		})
 	}

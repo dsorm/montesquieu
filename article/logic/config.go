@@ -1,12 +1,12 @@
 package logic
 
 import (
-	storePkg "github.com/david-sorm/goblog/article/store"
-	"github.com/david-sorm/goblog/article/store/mock"
-	"github.com/david-sorm/goblog/article/store/postgres"
+	storePkg "github.com/david-sorm/goblog/store"
+	"github.com/david-sorm/goblog/store/mock"
+	"github.com/david-sorm/goblog/store/postgres"
 )
 
-func ParseArticleStore(str string) storePkg.ArticleStore {
+func ParseStore(str string) storePkg.Store {
 	if str == "mock" {
 		store := mock.Store{}
 		return &store

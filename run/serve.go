@@ -2,10 +2,10 @@ package run
 
 import (
 	"fmt"
-	"github.com/david-sorm/goblog/article/store"
 	"github.com/david-sorm/goblog/config"
 	"github.com/david-sorm/goblog/globals"
 	"github.com/david-sorm/goblog/handlers"
+	"github.com/david-sorm/goblog/store"
 	templates "github.com/david-sorm/goblog/template"
 	"net/http"
 )
@@ -22,17 +22,17 @@ func Main() {
 	}
 
 	// init
-	fmt.Println("Initializing ArticleStore...")
-	asCfg := store.ArticleStoreConfig{
-		Host:                 globals.Cfg.ArticleStoreHost,
-		Database:             globals.Cfg.ArticleStoreDB,
-		Username:             globals.Cfg.ArticleStoreUser,
-		Password:             globals.Cfg.ArticleStorePassword,
+	fmt.Println("Initializing Store...")
+	asCfg := store.StoreConfig{
+		Host:                 globals.Cfg.StoreHost,
+		Database:             globals.Cfg.StoreDB,
+		Username:             globals.Cfg.StoreUser,
+		Password:             globals.Cfg.StorePassword,
 		ArticlesPerIndexPage: globals.Cfg.ArticlesPerPage,
 	}
-	err = globals.Cfg.ArticleStore.Init(func() {}, asCfg)
+	err = globals.Cfg.Store.Init(func() {}, asCfg)
 	if err != nil {
-		fmt.Println("An error has happened while initializing ArticleStore: ", err.Error())
+		fmt.Println("An error has happened while initializing Store: ", err.Error())
 	}
 
 	// prepare data for Views

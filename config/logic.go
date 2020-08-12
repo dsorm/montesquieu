@@ -35,9 +35,9 @@ func (cfg *File) verifyConfig() string {
 
 	// verify database type
 	validType := false
-	switch cfg.ArticleStore {
+	switch cfg.Store {
 	case "":
-		str += "ArticleStore can't be empty\n"
+		str += "Store can't be empty\n"
 	case "mock":
 		validType = true
 	case "postgres":
@@ -45,25 +45,25 @@ func (cfg *File) verifyConfig() string {
 	}
 
 	if !validType {
-		str += "ArticleStore is invalid\n"
+		str += "Store is invalid\n"
 	}
 
 	// verify caching engine
-	if cfg.CachingEngine == "" {
-		str += "CachingEngine can't be empty\n"
+	if cfg.CachingStore == "" {
+		str += "CachingStore can't be empty\n"
 	} else {
 		validType := false
 
-		if cfg.CachingEngine == "internal" {
+		if cfg.CachingStore == "internal" {
 			validType = true
 		}
 
-		if cfg.CachingEngine == "off" {
+		if cfg.CachingStore == "off" {
 			validType = true
 		}
 
 		if !validType {
-			str += "CachingEngine is invalid\n"
+			str += "CachingStore is invalid\n"
 		}
 	}
 
@@ -104,8 +104,8 @@ func (cfg *File) createConfig() {
 	// default configuration file
 	cfg.BlogName = "My blog"
 	cfg.ListenOn = ":8080"
-	cfg.ArticleStore = "mock"
-	cfg.CachingEngine = "off"
+	cfg.Store = "mock"
+	cfg.CachingStore = "off"
 	cfg.ArticlesPerPage = "5"
 
 	// marshal json and save

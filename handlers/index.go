@@ -55,7 +55,7 @@ func HandleIndex(rw http.ResponseWriter, req *http.Request) {
 		Page: 0,
 
 		// -1 since pages are zero-indexed
-		MaxPage: countMaxPage(globals.Cfg.ArticleStore.GetArticleNumber(), globals.Cfg.ArticlesPerPage),
+		MaxPage: countMaxPage(globals.Cfg.Store.GetArticleNumber(), globals.Cfg.ArticlesPerPage),
 	}
 	// get rid of the '/' at the beginning
 	uri = strings.TrimPrefix(uri, "/")
@@ -88,8 +88,19 @@ func HandleIndex(rw http.ResponseWriter, req *http.Request) {
 	indexView.LastPage = indexView.Page - 1
 	indexView.NextPage = indexView.Page + 1
 
+	// calculate the articles
+	// articles starting from
+	starti := globals.Cfg.ArticlesPerPage * indexView.Page
+	// and ending with these...
+	endi := starti + globals.Cfg.ArticlesPerPage
+
+	articleNum := globals.Cfg.Store.GetArticleNumber()
+	if endi > articleNum {
+		endi = articleNum
+	}
+
 	// insert the actual articles into page
-	indexView.Articles = globals.Cfg.ArticleStore.LoadArticlesForIndex(indexView.Page)
+	indexView.Articles = globals.Cfg.Store.LoadArticlesSortedByLatest(starti, endi)
 
 	// execute template
 

@@ -90,7 +90,7 @@ create schema ` + prefix + `
     );
 `
 
-const stmtIndex = `
+const stmtArticles = `
 select title, article_id, author_id, html_preview, timestamp from ` + prefix + `.articles
 order by timestamp desc
 offset $1
