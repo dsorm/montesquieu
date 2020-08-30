@@ -23,123 +23,123 @@ func getTestFields() fields {
 		articlesByTimestamp: []article.Article{
 			{
 				Timestamp: 10,
-				ID:        "article1",
+				ID:        1,
 				Title:     "Article 1",
 				Content:   "This is Article 1.",
 			},
 			{
 				Timestamp: 9,
-				ID:        "article2",
+				ID:        2,
 				Title:     "Article 2",
 				Content:   "This is Article 2.",
 			},
 			{
 				Timestamp: 8,
-				ID:        "article3",
+				ID:        3,
 				Title:     "Article 3",
 				Content:   "This is Article 3.",
 			},
 			{
 				Timestamp: 7,
-				ID:        "article4",
+				ID:        4,
 				Title:     "Article 4",
 				Content:   "This is Article 4.",
 			},
 			{
 				Timestamp: 6,
-				ID:        "article5",
+				ID:        5,
 				Title:     "Article 5",
 				Content:   "This is Article 5.",
 			},
 			{
 				Timestamp: 5,
-				ID:        "article6",
+				ID:        6,
 				Title:     "Article 6",
 				Content:   "This is Article 6.",
 			},
 			{
 				Timestamp: 4,
-				ID:        "article7",
+				ID:        7,
 				Title:     "Article 7",
 				Content:   "This is Article 7.",
 			},
 			{
 				Timestamp: 3,
-				ID:        "article8",
+				ID:        8,
 				Title:     "Article 8",
 				Content:   "This is Article 8.",
 			},
 			{
 				Timestamp: 2,
-				ID:        "article9",
+				ID:        9,
 				Title:     "Article 9",
 				Content:   "This is Article 9.",
 			},
 			{
 				Timestamp: 1,
-				ID:        "article10",
+				ID:        10,
 				Title:     "Article 10",
 				Content:   "This is Article 10.",
 			},
 		},
 		articlesByID: map[string]article.Article{
-			"article1": {
+			"1": {
 				Timestamp: 10,
-				ID:        "article1",
+				ID:        1,
 				Title:     "Article 1",
 				Content:   "This is Article 1.",
 			},
-			"article2": {
+			"2": {
 				Timestamp: 9,
-				ID:        "article2",
+				ID:        2,
 				Title:     "Article 2",
 				Content:   "This is Article 2.",
 			},
-			"article3": {
+			"3": {
 				Timestamp: 8,
-				ID:        "article3",
+				ID:        3,
 				Title:     "Article 3",
 				Content:   "This is Article 3.",
 			},
-			"article4": {
+			"4": {
 				Timestamp: 7,
-				ID:        "article4",
+				ID:        4,
 				Title:     "Article 4",
 				Content:   "This is Article 4.",
 			},
-			"article5": {
+			"5": {
 				Timestamp: 6,
-				ID:        "article5",
+				ID:        5,
 				Title:     "Article 5",
 				Content:   "This is Article 5.",
 			},
-			"article6": {
+			"6": {
 				Timestamp: 5,
-				ID:        "article6",
+				ID:        6,
 				Title:     "Article 6",
 				Content:   "This is Article 6.",
 			},
-			"article7": {
+			"7": {
 				Timestamp: 4,
-				ID:        "article7",
+				ID:        7,
 				Title:     "Article 7",
 				Content:   "This is Article 7.",
 			},
-			"article8": {
+			"8": {
 				Timestamp: 3,
-				ID:        "article8",
+				ID:        8,
 				Title:     "Article 8",
 				Content:   "This is Article 8.",
 			},
-			"article9": {
+			"9": {
 				Timestamp: 2,
-				ID:        "article9",
+				ID:        9,
 				Title:     "Article 9",
 				Content:   "This is Article 9.",
 			},
-			"article10": {
+			"10": {
 				Timestamp: 1,
-				ID:        "article10",
+				ID:        10,
 				Title:     "Article 10",
 				Content:   "This is Article 10.",
 			},
@@ -152,7 +152,7 @@ func getTestFields() fields {
 func TestMockStore_GetArticleByID(t *testing.T) {
 
 	type args struct {
-		ID string
+		ID uint64
 	}
 
 	testFields := getTestFields()
@@ -167,17 +167,17 @@ func TestMockStore_GetArticleByID(t *testing.T) {
 		{
 			name:   "Invalid Article",
 			fields: testFields,
-			args:   args{ID: "This article shouldn't exist"},
+			args:   args{ID: 250604},
 			want:   article.Article{},
 			want1:  false,
 		},
 		{
 			name:   "Article 1",
 			fields: testFields,
-			args:   args{ID: "article1"},
+			args:   args{ID: 1},
 			want: article.Article{
 				Timestamp: 10,
-				ID:        "article1",
+				ID:        1,
 				Title:     "Article 1",
 				Content:   "This is Article 1.",
 			},
@@ -285,19 +285,19 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 			want: []article.Article{
 				{
 					Timestamp: 10,
-					ID:        "article1",
+					ID:        1,
 					Title:     "Article 1",
 					Content:   "This is Article 1.",
 				},
 				{
 					Timestamp: 9,
-					ID:        "article2",
+					ID:        2,
 					Title:     "Article 2",
 					Content:   "This is Article 2.",
 				},
 				{
 					Timestamp: 8,
-					ID:        "article3",
+					ID:        3,
 					Title:     "Article 3",
 					Content:   "This is Article 3.",
 				},
@@ -310,19 +310,19 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 			want: []article.Article{
 				{
 					Timestamp: 7,
-					ID:        "article4",
+					ID:        4,
 					Title:     "Article 4",
 					Content:   "This is Article 4.",
 				},
 				{
 					Timestamp: 6,
-					ID:        "article5",
+					ID:        5,
 					Title:     "Article 5",
 					Content:   "This is Article 5.",
 				},
 				{
 					Timestamp: 5,
-					ID:        "article6",
+					ID:        6,
 					Title:     "Article 6",
 					Content:   "This is Article 6.",
 				},
@@ -335,7 +335,7 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 			want: []article.Article{
 				{
 					Timestamp: 1,
-					ID:        "article10",
+					ID:        10,
 					Title:     "Article 10",
 					Content:   "This is Article 10.",
 				},
