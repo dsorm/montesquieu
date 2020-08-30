@@ -3,6 +3,7 @@ package store
 import (
 	"github.com/david-sorm/goblog/article"
 	"github.com/david-sorm/goblog/users"
+	"html/template"
 )
 
 // import "github.com/lib/pq"
@@ -31,6 +32,8 @@ type StoreInfo struct {
  actual work of managing and keeping the data
 */
 type Store interface {
+	// TODO better function argument design (it's still pretty bad)
+	// TODO better internal (caused by the app malfunctioning etc.) and external (user-caused) error handling
 
 	// General
 
@@ -65,7 +68,7 @@ type Store interface {
 	 If an article with the ID can't be found, the second return parameter should
 	 return false, else if an article was found, return true
 	*/
-	GetArticleByID(ID string) (article.Article, bool)
+	GetArticleByID(id uint64) (article.Article, bool)
 
 	/*
 	 Should return the total number of articles, used for determining how many
@@ -74,13 +77,13 @@ type Store interface {
 	GetArticleNumber() uint64
 
 	// When called, the Store should make a new article in its database and save it.
-	NewArticle(article.Article)
+	AddArticle(title string, authorId uint64, timestamp uint64, content template.HTML)
 
 	// Store should look up the article by its ID and make corresponding changes
 	EditArticle(article.Article)
 
 	// The article should be looked up by its ID and deleted
-	RemoveArticle(article.Article)
+	RemoveArticle(id uint64)
 
 	// Users
 
@@ -90,19 +93,19 @@ type Store interface {
 	// Gets user ID from login name
 	// Returns whether a matching user was find using bool
 	// True = Found, False = Not
-	GetUserID(users.User) (users.User, bool)
+	GetUserID(login string) (uint64, bool)
 
 	// Searches for a user by ID
-	GetUser(users.User) users.User
+	GetUser(id uint64) users.User
 
 	// Makes a new user
-	AddUser(users.User)
+	AddUser(displayName string, login string, password string)
 
 	// Edits a user according to his ID
 	EditUser(users.User)
 
 	// Removes a user according to his ID
-	RemoveUser(users.User)
+	RemoveUser(id uint64)
 
 	// Authors
 
@@ -110,28 +113,33 @@ type Store interface {
 	ListAuthors(from uint64, to uint64) []users.Author
 
 	// Returns nil if the User is not an Author
-	GetAuthor(users.User) users.Author
+	GetAuthor(userId uint64) users.Author
 
 	// Adds an Author
-	AddAuthor(users.Author)
+	AddAuthor(userId uint64, authorName string)
 
 	// Links a user to an Author
 	// If User is nil, any link of an Author to a User should be deleted
-	LinkAuthor(users.Author, users.User)
+	LinkAuthor(authorId uint64, userId uint64)
 
 	// Removes an author
-	RemoveAuthor(users.Author)
+	RemoveAuthor(authorId uint64)
 
 	// Admins
 
+	// Searches whether user is an admin according to whether his ID exists
+	IsAdmin(userId uint64) bool
+
 	// Lists Admins, sorts by ID
-	ListAdmins(from uint64, to uint64) []users.Admin
+	// Since admins are just users with elevated privileges, just return the user's
+	// info
+	ListAdmins(from uint64, to uint64) []users.User
 
 	// Promotes a User to be an Admin
-	PromoteToAdmin(users.Admin)
+	PromoteToAdmin(userId uint64)
 
 	// Demotes an Admin to a User only
-	DemoteFromAdmin(users.Admin)
+	DemoteFromAdmin(userID uint64)
 }
 
 /*
@@ -144,7 +152,7 @@ type CachingStore interface {
 	Store
 
 	/*
-	 We use this method to pass the Store which should be used by this CachingStore
+	 We use this method to pass the Store which should be used by the CachingStore.
 	 CachingStore should call Init() on the Store before it starts initialising itself.
 	 Any errors that happened during the Init() of the Store should be returned
 	 through CachingStore's Init()

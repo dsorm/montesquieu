@@ -6,6 +6,7 @@ import (
 	"github.com/david-sorm/goblog/globals"
 	templates "github.com/david-sorm/goblog/template"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -25,8 +26,13 @@ func HandleArticle(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	convertInt, err := strconv.Atoi(split[2])
+	if err != nil {
+		fmt.Println("An error has happened while converting article id from request:", err)
+	}
+
 	// make sure article with the ID exists
-	article, exists := globals.Cfg.Store.GetArticleByID(split[2])
+	article, exists := globals.Cfg.Store.GetArticleByID(uint64(convertInt))
 	if !exists {
 		Handle404(rw, req)
 		return

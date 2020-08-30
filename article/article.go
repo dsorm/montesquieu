@@ -6,13 +6,13 @@ import (
 
 type Article struct {
 	// title of article
-	Name string
+	Title string
 
-	// Unique identifier used in URL
-	ID string
+	// Unique identifier used internally
+	ID uint64
 
 	// Unique identifier of the Author
-	AuthorID string
+	AuthorID uint64
 
 	// Date of release, used for sorting articles on run page
 	Timestamp uint64

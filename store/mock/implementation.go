@@ -4,6 +4,7 @@ import (
 	"github.com/david-sorm/goblog/article"
 	"github.com/david-sorm/goblog/store"
 	"github.com/david-sorm/goblog/users"
+	"html/template"
 	"strconv"
 	"sync"
 )
@@ -24,34 +25,38 @@ type Store struct {
 	admins []users.User
 }
 
+func (ms *Store) IsAdmin(id uint64) bool {
+	panic("implement me")
+}
+
 func (ms *Store) ListUsers(from uint64, to uint64) []users.User {
 	ms.m.Lock()
 	defer ms.m.Unlock()
 	return ms.users[from:to]
 }
 
-func (ms *Store) GetUserID(user users.User) (users.User, bool) {
+func (ms *Store) GetUserID(login string) (uint64, bool) {
 	ms.m.Lock()
 	defer ms.m.Unlock()
 	// find the user by login
 	for _, v := range ms.users {
-		if v.Login == user.Login {
-			return v, true
+		if v.Login == login {
+			return v.ID, true
 		}
 	}
-	return users.User{}, false
+	return 0, false
 }
 
-func (ms *Store) GetUser(user users.User) users.User {
+func (ms *Store) GetUser(id uint64) users.User {
 	ms.m.Lock()
 	defer ms.m.Unlock()
 	// find the user by ID
 	for _, v := range ms.users {
-		if v.ID == user.ID {
+		if v.ID == id {
 			return v
 		}
 	}
-	return user
+	return users.User{}
 }
 
 func (ms *Store) ListAuthors(from uint64, to uint64) []users.Author {
@@ -68,15 +73,11 @@ func (ms *Store) ListAuthors(from uint64, to uint64) []users.Author {
 	return authors
 }
 
-func (ms *Store) ListAdmins(from uint64, to uint64) []users.Admin {
+func (ms *Store) ListAdmins(from uint64, to uint64) []users.User {
 	ms.m.Lock()
 	defer ms.m.Unlock()
 
-	admins := make([]users.Admin, 0, 0)
-	for _, v := range ms.admins {
-		admins = append(admins, users.Admin(v))
-	}
-	return admins[from:to]
+	return ms.admins[from:to]
 }
 
 func (ms *Store) Info() store.StoreInfo {
@@ -87,7 +88,7 @@ func (ms *Store) Info() store.StoreInfo {
 }
 
 // too lazy to implement, and not needed
-func (ms *Store) NewArticle(a article.Article) {
+func (ms *Store) AddArticle(name string, authorId uint64, timestamp uint64, content template.HTML) {
 	return
 }
 
@@ -95,13 +96,18 @@ func (ms *Store) EditArticle(a article.Article) {
 	return
 }
 
-func (ms *Store) RemoveArticle(a article.Article) {
+func (ms *Store) RemoveArticle(id uint64) {
 	return
 }
 
-func (ms *Store) AddUser(user users.User) {
+func (ms *Store) AddUser(displayName string, login string, password string) {
 	ms.m.Lock()
-	ms.users = append(ms.users, user)
+	ms.users = append(ms.users, users.User{
+		ID:          uint64(len(ms.users) + 1),
+		DisplayName: displayName,
+		Login:       login,
+		Password:    password,
+	})
 	ms.m.Unlock()
 }
 
@@ -116,11 +122,11 @@ func (ms *Store) EditUser(user users.User) {
 	ms.m.Unlock()
 }
 
-func (ms *Store) RemoveUser(user users.User) {
+func (ms *Store) RemoveUser(id uint64) {
 	ms.m.Lock()
 	// find the user by ID
 	for k, v := range ms.users {
-		if v.ID == user.ID {
+		if v.ID == id {
 			// copy the last user into the position of deleted user
 			ms.users[k] = ms.users[len(ms.users)-1]
 
@@ -133,45 +139,45 @@ func (ms *Store) RemoveUser(user users.User) {
 
 // everyone is a an author since i'm way too lazy to implement this
 // also user id == author id
-func (ms *Store) GetAuthor(u users.User) users.Author {
+func (ms *Store) GetAuthor(userId uint64) users.Author {
 	ms.m.Lock()
 	defer ms.m.Unlock()
 
-	u2 := ms.GetUser(u)
+	u2 := ms.GetUser(userId)
 	return users.Author{
 		User:     u2,
 		AuthorID: u2.ID,
 	}
 }
 
-func (ms *Store) AddAuthor(author users.Author) {
+func (ms *Store) AddAuthor(userId uint64, authorName string) {
 	return
 }
 
-func (ms *Store) LinkAuthor(author users.Author, user users.User) {
+func (ms *Store) LinkAuthor(authorId uint64, userId uint64) {
 	return
 }
 
-func (ms *Store) RemoveAuthor(author users.Author) {
+func (ms *Store) RemoveAuthor(authorId uint64) {
 	return
 }
 
-func (ms *Store) PromoteToAdmin(admin users.Admin) {
+func (ms *Store) PromoteToAdmin(id uint64) {
 	ms.m.Lock()
 	// find the user by ID
 	for _, v := range ms.users {
-		if v.ID == admin.ID {
+		if v.ID == id {
 			ms.admins = append(ms.admins, v)
 		}
 	}
 	ms.m.Unlock()
 }
 
-func (ms *Store) DemoteFromAdmin(admin users.Admin) {
+func (ms *Store) DemoteFromAdmin(id uint64) {
 	ms.m.Lock()
 	// find the admin by ID
 	for k, v := range ms.users {
-		if v.ID == admin.ID {
+		if v.ID == id {
 			// copy the last admin into the position of deleted admin
 			ms.admins[k] = ms.admins[len(ms.admins)-1]
 
@@ -196,10 +202,10 @@ func (ms *Store) LoadArticlesSortedByLatest(from uint64, to uint64) []article.Ar
 	return ms.articlesByTimestamp[from:to]
 }
 
-func (ms *Store) GetArticleByID(ID string) (article.Article, bool) {
+func (ms *Store) GetArticleByID(ID uint64) (article.Article, bool) {
 	// val stores the value, if there's none, it simply stores a zeroed Article
 	// exists stores boolean value meaning the existence of an article with the ID
-	val, exists := ms.articlesByID[ID]
+	val, exists := ms.articlesByID[strconv.FormatUint(ID, 10)]
 	return val, exists
 }
 
@@ -218,13 +224,16 @@ func (ms *Store) Init(_ func(), cfg store.StoreConfig) error {
 	ms.articlesByTimestamp = make([]article.Article, 0, 0)
 	ms.articlesByID = make(map[string]article.Article)
 	ms.users = make([]users.User, 0, 0)
-	ms.users = make([]users.User, 0, 0)
+	ms.admins = make([]users.User, 0, 0)
+
+	// example user and admin
+	ms.AddUser("", "", "")
 
 	// lets fill articles with some mock articles
 	ms.articlesByTimestamp = append(ms.articlesByTimestamp, article.Article{
 		Timestamp: 1585828351,
-		ID:        "welcome",
-		Name:      "Welcome to your brand new Goblog installation!",
+		ID:        100,
+		Title:     "Welcome to your brand new Goblog installation!",
 		Content:   "Thank you for choosing Goblog! You should consider <b>changing the config.json</b>, since now Goblog only displays mock content, and you won't be able to make articles until you use a real Store.",
 	})
 
@@ -232,15 +241,15 @@ func (ms *Store) Init(_ func(), cfg store.StoreConfig) error {
 	for i := 1; i < 11; i++ {
 		ms.articlesByTimestamp = append(ms.articlesByTimestamp, article.Article{
 			Timestamp: ms.articlesByTimestamp[i-1].Timestamp - 1,
-			ID:        "article" + strconv.Itoa(i+1),
-			Name:      "Article " + strconv.Itoa(i+1),
+			ID:        uint64(i + 1),
+			Title:     "Article " + strconv.Itoa(i+1),
 			Content:   "Lorem ipsum dolor sit amet",
 		})
 	}
 
 	// make a copy that's sorted by ID
 	for _, v := range ms.articlesByTimestamp {
-		ms.articlesByID[v.ID] = v
+		ms.articlesByID[strconv.FormatUint(v.ID, 10)] = v
 	}
 
 	// i don't think there's even a remote possibility of error in this function

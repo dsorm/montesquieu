@@ -23,6 +23,9 @@ type Author struct {
 
 	// Authors have their own ID's, separate from User ID's
 	AuthorID uint64
+
+	// They also have their own names, because why not
+	AuthorName string
 }
 
 // Admin is a kind of User that has access to the Admin Panel
