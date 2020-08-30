@@ -18,14 +18,15 @@ services:
       LISTENON: ":80"
 
       # dont change these, unless you know what you're doing
-      # you can also use the "mock" articlestore, which does almost nothing
+      # you can also use the "mock" store, which does almost nothing
       # postgres currently does nothing too, but it at least pretends it's useful
-      ARTICLESTORE: "postgres"
-      ARTICLESTORE_HOST: "postgres"
-      ARTICLESTORE_DB: "goblog"
-      ARTICLESTORE_USER: "goblog"
-      ARTICLESTORE_PASSWORD: "goblog"
-      CACHINGENGINE: "off"
+      STORE: "postgres"
+      STORE_HOST: "postgres"
+      STORE_DB: "goblog"
+      STORE_USER: "goblog"
+      STORE_PASSWORD: "goblog"
+      CACHINGSTORE: "off"
+      HOTSWAPTEMPLATES: "no"
 
   postgres:
     image: postgres

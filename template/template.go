@@ -2,12 +2,19 @@ package templates
 
 import (
 	"fmt"
+	"github.com/david-sorm/goblog/globals"
+	"github.com/radovskyb/watcher"
 	"html/template"
 	"io/ioutil"
+	"regexp"
 	"strings"
+	"time"
 )
 
 var Store *template.Template
+
+// Hot Swap Templates should be run as a singleton, so that's the reason for this variable
+var liveTemplatesRunning = false
 
 // These are the required default templates for proper startup.
 // If any template is missing, the server will panic.
@@ -33,6 +40,55 @@ func checkRequiredTemplates() {
 		}
 	}
 	fmt.Println("All required templates present!")
+}
+
+// Hot Swap Templates are used for faster development of templates, because it auto-reloads templates when changes are
+// detected instead of having to manually restart goblog
+func InitHotSwapTemplates() {
+	// run as singleton
+	if liveTemplatesRunning {
+		return
+	}
+	fmt.Println("Setting up Hot Swap Templates...")
+
+	// voodoo magic begins
+	w := watcher.New()
+
+	// send only one event at a time to the channel
+	w.SetMaxEvents(1)
+
+	// only watch files with ".gohtml" suffix
+	regex := regexp.MustCompile("^.+\\.gohtml$")
+	w.AddFilterHook(watcher.RegexFilterHook(regex, false))
+
+	// set receivers for receiving events
+	go func() {
+		for {
+			select {
+			case _ = <-w.Event:
+				t := time.Now().Format("15:04:05")
+				fmt.Println("[Hot Swap Templates] Change detected @", t)
+				Load()
+			case err := <-w.Error:
+				fmt.Println("An error has happened while watching files for Hot Swap Templates:", err.Error())
+			case <-w.Closed:
+				return
+			}
+		}
+	}()
+
+	// watch the html/ folder
+	if err := w.Add("html/"); err != nil {
+		fmt.Println("Failed to set up a watch for Hot Swap Templates:", err.Error())
+	}
+
+	// start watching asynchronously
+	go func() {
+		if err := w.Start(time.Millisecond * 500); err != nil {
+			fmt.Println("Failed to set up a watch for Hot Swap Templates:", err.Error())
+		}
+	}()
+	liveTemplatesRunning = true
 }
 
 // Prepares all templates, not used when unit testing
@@ -73,4 +129,9 @@ func Load() {
 
 	// we don't like nil pointer exceptions...
 	checkRequiredTemplates()
+
+	// set up watcher for Hot Swap Templates
+	if globals.Cfg.HotSwapTemplates {
+		InitHotSwapTemplates()
+	}
 }

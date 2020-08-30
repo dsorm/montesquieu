@@ -2,14 +2,14 @@ package mock
 
 import (
 	"github.com/david-sorm/goblog/article"
-	"github.com/david-sorm/goblog/article/store"
+	"github.com/david-sorm/goblog/store"
 	"reflect"
 	"testing"
 )
 
 // struct fields
 type fields struct {
-	cfg                 store.ArticleStoreConfig
+	cfg                 store.StoreConfig
 	articlesByTimestamp []article.Article
 	articlesByID        map[string]article.Article
 }
@@ -17,130 +17,130 @@ type fields struct {
 // makes test struct field content for unit testing
 func getTestFields() fields {
 	f := fields{
-		cfg: store.ArticleStoreConfig{
+		cfg: store.StoreConfig{
 			ArticlesPerIndexPage: 3,
 		},
 		articlesByTimestamp: []article.Article{
 			{
 				Timestamp: 10,
-				ID:        "article1",
-				Name:      "Article 1",
+				ID:        1,
+				Title:     "Article 1",
 				Content:   "This is Article 1.",
 			},
 			{
 				Timestamp: 9,
-				ID:        "article2",
-				Name:      "Article 2",
+				ID:        2,
+				Title:     "Article 2",
 				Content:   "This is Article 2.",
 			},
 			{
 				Timestamp: 8,
-				ID:        "article3",
-				Name:      "Article 3",
+				ID:        3,
+				Title:     "Article 3",
 				Content:   "This is Article 3.",
 			},
 			{
 				Timestamp: 7,
-				ID:        "article4",
-				Name:      "Article 4",
+				ID:        4,
+				Title:     "Article 4",
 				Content:   "This is Article 4.",
 			},
 			{
 				Timestamp: 6,
-				ID:        "article5",
-				Name:      "Article 5",
+				ID:        5,
+				Title:     "Article 5",
 				Content:   "This is Article 5.",
 			},
 			{
 				Timestamp: 5,
-				ID:        "article6",
-				Name:      "Article 6",
+				ID:        6,
+				Title:     "Article 6",
 				Content:   "This is Article 6.",
 			},
 			{
 				Timestamp: 4,
-				ID:        "article7",
-				Name:      "Article 7",
+				ID:        7,
+				Title:     "Article 7",
 				Content:   "This is Article 7.",
 			},
 			{
 				Timestamp: 3,
-				ID:        "article8",
-				Name:      "Article 8",
+				ID:        8,
+				Title:     "Article 8",
 				Content:   "This is Article 8.",
 			},
 			{
 				Timestamp: 2,
-				ID:        "article9",
-				Name:      "Article 9",
+				ID:        9,
+				Title:     "Article 9",
 				Content:   "This is Article 9.",
 			},
 			{
 				Timestamp: 1,
-				ID:        "article10",
-				Name:      "Article 10",
+				ID:        10,
+				Title:     "Article 10",
 				Content:   "This is Article 10.",
 			},
 		},
 		articlesByID: map[string]article.Article{
-			"article1": {
+			"1": {
 				Timestamp: 10,
-				ID:        "article1",
-				Name:      "Article 1",
+				ID:        1,
+				Title:     "Article 1",
 				Content:   "This is Article 1.",
 			},
-			"article2": {
+			"2": {
 				Timestamp: 9,
-				ID:        "article2",
-				Name:      "Article 2",
+				ID:        2,
+				Title:     "Article 2",
 				Content:   "This is Article 2.",
 			},
-			"article3": {
+			"3": {
 				Timestamp: 8,
-				ID:        "article3",
-				Name:      "Article 3",
+				ID:        3,
+				Title:     "Article 3",
 				Content:   "This is Article 3.",
 			},
-			"article4": {
+			"4": {
 				Timestamp: 7,
-				ID:        "article4",
-				Name:      "Article 4",
+				ID:        4,
+				Title:     "Article 4",
 				Content:   "This is Article 4.",
 			},
-			"article5": {
+			"5": {
 				Timestamp: 6,
-				ID:        "article5",
-				Name:      "Article 5",
+				ID:        5,
+				Title:     "Article 5",
 				Content:   "This is Article 5.",
 			},
-			"article6": {
+			"6": {
 				Timestamp: 5,
-				ID:        "article6",
-				Name:      "Article 6",
+				ID:        6,
+				Title:     "Article 6",
 				Content:   "This is Article 6.",
 			},
-			"article7": {
+			"7": {
 				Timestamp: 4,
-				ID:        "article7",
-				Name:      "Article 7",
+				ID:        7,
+				Title:     "Article 7",
 				Content:   "This is Article 7.",
 			},
-			"article8": {
+			"8": {
 				Timestamp: 3,
-				ID:        "article8",
-				Name:      "Article 8",
+				ID:        8,
+				Title:     "Article 8",
 				Content:   "This is Article 8.",
 			},
-			"article9": {
+			"9": {
 				Timestamp: 2,
-				ID:        "article9",
-				Name:      "Article 9",
+				ID:        9,
+				Title:     "Article 9",
 				Content:   "This is Article 9.",
 			},
-			"article10": {
+			"10": {
 				Timestamp: 1,
-				ID:        "article10",
-				Name:      "Article 10",
+				ID:        10,
+				Title:     "Article 10",
 				Content:   "This is Article 10.",
 			},
 		},
@@ -152,7 +152,7 @@ func getTestFields() fields {
 func TestMockStore_GetArticleByID(t *testing.T) {
 
 	type args struct {
-		ID string
+		ID uint64
 	}
 
 	testFields := getTestFields()
@@ -167,18 +167,18 @@ func TestMockStore_GetArticleByID(t *testing.T) {
 		{
 			name:   "Invalid Article",
 			fields: testFields,
-			args:   args{ID: "This article shouldn't exist"},
+			args:   args{ID: 250604},
 			want:   article.Article{},
 			want1:  false,
 		},
 		{
 			name:   "Article 1",
 			fields: testFields,
-			args:   args{ID: "article1"},
+			args:   args{ID: 1},
 			want: article.Article{
 				Timestamp: 10,
-				ID:        "article1",
-				Name:      "Article 1",
+				ID:        1,
+				Title:     "Article 1",
 				Content:   "This is Article 1.",
 			},
 			want1: true,
@@ -232,7 +232,7 @@ func TestMockStore_GetArticleNumber(t *testing.T) {
 func TestMockStore_Init(t *testing.T) {
 	type args struct {
 		f   func()
-		cfg store.ArticleStoreConfig
+		cfg store.StoreConfig
 	}
 	testFields := getTestFields()
 	tests := []struct {
@@ -267,7 +267,8 @@ func TestMockStore_Init(t *testing.T) {
 
 func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 	type args struct {
-		page uint64
+		from uint64
+		to   uint64
 	}
 
 	testFields := getTestFields()
@@ -280,24 +281,24 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 		{
 			name:   "page 0 (first page) test",
 			fields: testFields,
-			args:   args{page: 0},
+			args:   args{0, 3},
 			want: []article.Article{
 				{
 					Timestamp: 10,
-					ID:        "article1",
-					Name:      "Article 1",
+					ID:        1,
+					Title:     "Article 1",
 					Content:   "This is Article 1.",
 				},
 				{
 					Timestamp: 9,
-					ID:        "article2",
-					Name:      "Article 2",
+					ID:        2,
+					Title:     "Article 2",
 					Content:   "This is Article 2.",
 				},
 				{
 					Timestamp: 8,
-					ID:        "article3",
-					Name:      "Article 3",
+					ID:        3,
+					Title:     "Article 3",
 					Content:   "This is Article 3.",
 				},
 			},
@@ -305,24 +306,24 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 		{
 			name:   "page 1 test",
 			fields: testFields,
-			args:   args{page: 1},
+			args:   args{3, 6},
 			want: []article.Article{
 				{
 					Timestamp: 7,
-					ID:        "article4",
-					Name:      "Article 4",
+					ID:        4,
+					Title:     "Article 4",
 					Content:   "This is Article 4.",
 				},
 				{
 					Timestamp: 6,
-					ID:        "article5",
-					Name:      "Article 5",
+					ID:        5,
+					Title:     "Article 5",
 					Content:   "This is Article 5.",
 				},
 				{
 					Timestamp: 5,
-					ID:        "article6",
-					Name:      "Article 6",
+					ID:        6,
+					Title:     "Article 6",
 					Content:   "This is Article 6.",
 				},
 			},
@@ -330,12 +331,12 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 		{
 			name:   "page 3 (last page) test",
 			fields: testFields,
-			args:   args{page: 3},
+			args:   args{9, 10},
 			want: []article.Article{
 				{
 					Timestamp: 1,
-					ID:        "article10",
-					Name:      "Article 10",
+					ID:        10,
+					Title:     "Article 10",
 					Content:   "This is Article 10.",
 				},
 			},
@@ -348,7 +349,7 @@ func TestMockStore_LoadArticlesForIndex(t *testing.T) {
 				articlesByTimestamp: tt.fields.articlesByTimestamp,
 				articlesByID:        tt.fields.articlesByID,
 			}
-			if got := ms.LoadArticlesForIndex(tt.args.page); !reflect.DeepEqual(got, tt.want) {
+			if got := ms.LoadArticlesSortedByLatest(tt.args.from, tt.args.to); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("LoadArticlesForIndex() = %v, want %v", got, tt.want)
 			}
 		})

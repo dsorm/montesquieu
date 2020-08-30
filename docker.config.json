@@ -2,10 +2,10 @@
   "BlogName": "My blog",
   "ArticlesPerPage": "5",
   "ListenOn": ":80",
-  "ArticleStore": "mock",
-  "ArticleStoreHost": "",
-  "ArticleStoreDB": "",
-  "ArticleStoreUser": "",
-  "ArticleStorePassword": "",
-  "CachingEngine": "off"
+  "Store": "mock",
+  "StoreHost": "",
+  "StoreDB": "",
+  "StoreUser": "",
+  "StorePassword": "",
+  "CachingStore": "off"
 }
