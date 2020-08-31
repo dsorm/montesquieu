@@ -63,7 +63,6 @@ func Main() {
 	mux.Handle("/css/", http.StripPrefix("/css/", handleCss))
 	mux.Handle("/fonts/", http.StripPrefix("/fonts/", handleFonts))
 	mux.Handle("/js/", http.StripPrefix("/js/", handleJs))
-	jkjjkkjjk
 
 	fmt.Println("Server starting at port", globals.Cfg.ListenOn)
 
