@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"context"
 	"fmt"
 	"github.com/david-sorm/goblog/article"
 	"github.com/david-sorm/goblog/store"
@@ -19,7 +18,7 @@ type Store struct {
 
 // IsAdmin implements Store's IsAdmin function
 func (p *Store) IsAdmin(id uint64) bool {
-	rows, err := pool.Query(context.Background(), stmtIsAdmin, id)
+	rows, err := pool.Query(returnConnectionCtx(), stmtIsAdmin, id)
 
 	if err != nil {
 		fmt.Println("[Postgres Store] An error has happened while checking if the user is an admin:", err)
@@ -29,6 +28,7 @@ func (p *Store) IsAdmin(id uint64) bool {
 	for rows.Next() {
 		rows.Scan(&count)
 	}
+	rows.Close()
 	return count == 1
 }
 
@@ -42,7 +42,7 @@ func (p *Store) Info() store.StoreInfo {
 
 // ListUsers implements Store's ListUsers function
 func (p *Store) ListUsers(from uint64, to uint64) []users.User {
-	rows, err := pool.Query(context.Background(), stmtListUsers, from, to)
+	rows, err := pool.Query(returnConnectionCtx(), stmtListUsers, from, to)
 
 	if err != nil {
 		fmt.Println("[Postgres Store] An error has happened while listing users:", err)
@@ -54,17 +54,19 @@ func (p *Store) ListUsers(from uint64, to uint64) []users.User {
 		rows.Scan(&u.ID, &u.DisplayName, &u.Login)
 		us = append(us, u)
 	}
+	rows.Close()
 	return us
 }
 
 // GetUserID implements Store's GetUserID function
 func (p *Store) GetUserID(login string) (uint64, bool) {
-	rows, err := pool.Query(context.Background(), stmtGetUserID, login)
+	rows, err := pool.Query(returnConnectionCtx(), stmtGetUserID, login)
 
 	if err != nil {
 		fmt.Println("[Postgres Store] An error has happened while getting user's id:", err)
 	}
 
+	defer rows.Close()
 	if rows.Next() {
 		// if there are any rows
 		var id uint64
@@ -78,7 +80,7 @@ func (p *Store) GetUserID(login string) (uint64, bool) {
 
 // GetUser implements Store's GetUser function
 func (p *Store) GetUser(id uint64) users.User {
-	rows, err := pool.Query(context.Background(), stmtGetUser, id)
+	rows, err := pool.Query(returnConnectionCtx(), stmtGetUser, id)
 
 	if err != nil {
 		fmt.Println("[Postgres Store] An error has happened while getting a user:", err)
@@ -88,12 +90,13 @@ func (p *Store) GetUser(id uint64) users.User {
 	for rows.Next() {
 		rows.Scan(&u.ID, &u.DisplayName, &u.Login, &u.Password)
 	}
+	rows.Close()
 	return u
 }
 
 // ListAuthors implements Store's ListAuthors function
 func (p *Store) ListAuthors(from uint64, to uint64) []users.Author {
-	rows, err := pool.Query(context.Background(), stmtListAuthors, from, to)
+	rows, err := pool.Query(returnConnectionCtx(), stmtListAuthors, from, to)
 
 	if err != nil {
 		fmt.Println("[Postgres Store] An error has happened while listing authors:", err)
@@ -105,12 +108,13 @@ func (p *Store) ListAuthors(from uint64, to uint64) []users.Author {
 		rows.Scan(&a.ID, &a.DisplayName, &a.Login, &a.AuthorID, &a.AuthorName)
 		authors = append(authors, a)
 	}
+	rows.Close()
 	return authors
 }
 
 // ListAdmins implements Store's ListAdmins function
 func (p *Store) ListAdmins(from uint64, to uint64) []users.User {
-	rows, err := pool.Query(context.Background(), stmtListAdmins, from, to)
+	rows, err := pool.Query(returnConnectionCtx(), stmtListAdmins, from, to)
 
 	if err != nil {
 		fmt.Println("[Postgres Store] An error has happened while listing admins:", err)
@@ -122,12 +126,14 @@ func (p *Store) ListAdmins(from uint64, to uint64) []users.User {
 		rows.Scan(&u.ID, &u.DisplayName, &u.Login)
 		admins = append(admins, u)
 	}
+	rows.Close()
+
 	return admins
 }
 
 // LoadArticlesSortedByLatest implements Store's LoadArticlesSortedByLatest function
 func (p *Store) LoadArticlesSortedByLatest(from uint64, to uint64) []article.Article {
-	rows, err := pool.Query(context.Background(), stmtLoadArticlesSortedByNewest, from, to)
+	rows, err := pool.Query(returnConnectionCtx(), stmtLoadArticlesSortedByNewest, from, to)
 	if err != nil {
 		fmt.Println("An error has happened while loading articles for index:", err.Error())
 		return []article.Article{}
@@ -150,6 +156,7 @@ func (p *Store) LoadArticlesSortedByLatest(from uint64, to uint64) []article.Art
 			Content:   template.HTML(htmlPreview),
 		})
 	}
+	rows.Close()
 
 	return articles
 }
@@ -190,7 +197,7 @@ func (p *Store) RemoveUser(id uint64) {
 
 // GetAuthor implements Store's GetAuthor function
 func (p *Store) GetAuthor(userId uint64) users.Author {
-	rows, err := pool.Query(context.Background(), stmtGetAuthor, userId)
+	rows, err := pool.Query(returnConnectionCtx(), stmtGetAuthor, userId)
 	if err != nil {
 		fmt.Println("[Postgres Store] An error has happened while getting an author:", err)
 	}
@@ -199,6 +206,7 @@ func (p *Store) GetAuthor(userId uint64) users.Author {
 	for rows.Next() {
 		rows.Scan(&author.AuthorID, &author.AuthorName)
 	}
+	rows.Close()
 
 	return author
 }
@@ -230,7 +238,7 @@ func (p *Store) DemoteFromAdmin(userId uint64) {
 
 // GetArticleNumber implements Store's GetArticleNumber function
 func (p *Store) GetArticleNumber() uint64 {
-	rows, err := pool.Query(context.Background(), stmtArticleNumber)
+	rows, err := pool.Query(returnConnectionCtx(), stmtArticleNumber)
 	if err != nil {
 		fmt.Println("An error has happened while getting the number of articles from Postgres:", err.Error())
 	}
@@ -246,24 +254,13 @@ func (p *Store) GetArticleNumber() uint64 {
 
 }
 
-// Init implements Store's Init function
-func (p *Store) Init(f func(), cfg store.StoreConfig) error {
-	p.ArticlesPerIndexPage = cfg.ArticlesPerIndexPage
-	err := dbInit(cfg.Host, cfg.Database, cfg.Username, cfg.Password)
-
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 // LoadArticlesForIndex implements Store's LoadArticlesForIndex function
 func (p *Store) LoadArticlesForIndex(page uint64) []article.Article {
 	// return articles starting from
 	offset := p.ArticlesPerIndexPage * page
 	limit := p.ArticlesPerIndexPage
 
-	rows, err := pool.Query(context.Background(), stmtLoadArticlesSortedByNewest, offset, limit)
+	rows, err := pool.Query(returnConnectionCtx(), stmtLoadArticlesSortedByNewest, offset, limit)
 	if err != nil {
 		fmt.Println("An error has happened while loading articles for index:", err.Error())
 		return []article.Article{}
@@ -293,7 +290,7 @@ func (p *Store) LoadArticlesForIndex(page uint64) []article.Article {
 
 // GetArticleByID implements Store's GetArticleByID function
 func (p *Store) GetArticleByID(id uint64) (article.Article, bool) {
-	rows, err := pool.Query(context.Background(), stmtGetArticleByID, id)
+	rows, err := pool.Query(returnConnectionCtx(), stmtGetArticleByID, id)
 	if err != nil {
 		fmt.Println("An error has happened while loading articles for index:", err.Error())
 		return article.Article{}, false
@@ -321,8 +318,10 @@ func (p *Store) GetArticleByID(id uint64) (article.Article, bool) {
 // doExec is a helper function that helps prevent code duplication when doing
 // simple pgx exec queries
 func doExec(stmt string, activity string, arguments ...interface{}) {
-	ct, err := pool.Exec(context.Background(), stmt, arguments...)
+	ct, err := pool.Exec(returnConnectionCtx(), stmt, arguments...)
 	if err != nil || ct.RowsAffected() == 0 {
 		fmt.Println("[Postgres Store] An error has happened while "+activity+": ", err)
 	}
+	ct.Delete()
+
 }

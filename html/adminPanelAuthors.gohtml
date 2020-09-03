@@ -11,12 +11,14 @@
             </tr>
         </thead>
         <tbody>
+        {{ range $v := . }}
             <tr>
-                <td>420</td>
-                <td>Snoop Dogg</td>
-                <td>snoop_doggy_dogg</td>
-                <td><a href="#">Show</a></td>
+                <td>{{ $v.ID }}</td>
+                <td>{{ $v.DisplayName }}</td>
+                <td>{{ $v.Login }}</td>
+                <td><a href="{{ $v.ResetPasswordURL }}">Show</a></td>
             </tr>
+        {{ end }}
         </tbody>
     </table>
 </div>
