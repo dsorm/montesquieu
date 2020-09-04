@@ -7,47 +7,47 @@
                 <legend>General</legend>
                 <div class="pure-control-group">
                     <label for="blog-name">Blog Name</label>
-                    <input type="text" id="blog-name" value="My blog"/>
+                    <input type="text" id="blog-name" value="{{ .BlogName }}"/>
                 </div>
                 <div class="pure-control-group">
                     <label for="blog-name">Articles shown per page</label>
-                    <input type="text" id="blog-name" value="5"/>
+                    <input type="text" id="blog-name" value="{{ .ArticlesPerPage }}"/>
                     <span class="pure-form-message-inline">It's recomended to keep this value under 20 to keep page load times low.</span>
                 </div>
                 <legend>App settings</legend>
                 <div class="pure-control-group">
                     <label for="blog-name">Port</label>
-                    <input type="text" id="blog-name" value="80"/>
+                    <input type="text" id="blog-name" value="{{ .ListenOn }}"/>
                     <span class="pure-form-message-inline">The port on which the app listens for incoming HTTP connections</span>
                 </div>
-                <legend>ArticleStore settings</legend>
+                <legend>Store settings</legend>
                 <div class="pure-control-group">
-                    <label for="articlestore">ArticleStore</label>
-                    <select id="articlestore" class="pure-input-1-2">
+                    <label for="store">Store</label>
+                    <select id="store" class="pure-input-1-2">
                         <option value="mock">Mock (only for testing)</option>
                         <option value="postgres">Postgres</option>
                     </select>
                 </div>
                 <div class="pure-control-group">
-                    <label for="as-host">ArticleStore Host</label>
-                    <input type="text" id="as-host" value="localhost"/>
+                    <label for="as-host">Store Host</label>
+                    <input type="text" id="as-host" value="{{ .StoreHost }}"/>
                 </div>
                 <div class="pure-control-group">
-                    <label for="as-db">ArticleStore DB</label>
-                    <input type="text" id="as-db" value="goblog"/>
+                    <label for="as-db">Store DB</label>
+                    <input type="text" id="as-db" value="{{ .StoreDB }}"/>
                 </div>
                 <div class="pure-control-group">
-                    <label for="as-user">ArticleStore User</label>
-                    <input type="text" id="as-user" value="goblog"/>
+                    <label for="as-user">Store User</label>
+                    <input type="text" id="as-user" value="{{ .StoreUser }}"/>
                 </div>
                 <div class="pure-control-group">
-                    <label for="as-db">ArticleStore Password</label>
+                    <label for="as-db">Store Password</label>
                     <input type="text" id="as-db" placeholder="*secret*"/>
                     <span class="pure-form-message-inline">This setting won't be changed if left empty</span>
                 </div>
                 <div class="pure-control-group">
-                    <label for="as-ce">CachingEngine</label>
-                    <input type="checkbox" id="as-ce"/>
+                    <label for="as-ce">CachingStore</label>
+                    <input type="checkbox" id="as-ce" {{ if .CachingStore }} checked=checked {{ end }}/>
                 </div>
                 <button class="pure-button pure-button-primary" type="submit">Submit</button>
             </fieldset>
