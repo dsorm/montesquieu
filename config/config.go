@@ -54,7 +54,7 @@ type Config struct {
 }
 
 // "unparsed" config that's served from and to the user
-type File struct {
+type file struct {
 	BlogName         string
 	ArticlesPerPage  string
 	ListenOn         string
@@ -69,7 +69,7 @@ type File struct {
 
 // parses ConfigFile from user into Config for the app
 // it's assumed that ConfigFile is verified and correct
-func (cfg *File) parseFile() *Config {
+func (cfg *file) parseFile() *Config {
 	parsedCfg := &Config{
 		BlogName: cfg.BlogName,
 		ListenOn: cfg.ListenOn,
