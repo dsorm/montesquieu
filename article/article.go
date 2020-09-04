@@ -15,6 +15,7 @@ type Article struct {
 	AuthorID uint64
 
 	// Date of release, used for sorting articles on run page
+	// TODO change the type to time.Time
 	Timestamp uint64
 
 	// type template.HTML allows unescaped html

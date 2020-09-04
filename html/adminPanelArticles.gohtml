@@ -5,7 +5,7 @@
         <thead>
             <tr>
                 <th>Title</th>
-                <th>Author</th>
+                <th>Author ID</th>
                 <th>HTML Content</th>
                 <th>HTML Preview</th>
                 <th>Time</th>
@@ -13,22 +13,16 @@
             </tr>
         </thead>
         <tbody>
+        {{ range $v := . }}
             <tr>
-                <td>Example title 2</td>
-                <td>420 - Snoop Dogg</td>
+                <td>{{ $v.Title }}</td>
+                <td>{{ $v.AuthorID }}</td>
                 <td><a href="#">Show</a></td>
                 <td><a href="#">Show</a></td>
-                <td>16:52 9.8.2020</td>
-                <td>2</td>
+                <td>{{ $v.Timestamp }}</td>
+                <td>{{ $v.ID }}</td>
             </tr>
-            <tr>
-                <td>Example title 1</td>
-                <td>420 - Snoop Dogg</td>
-                <td><a href="#">Show</a></td>
-                <td><a href="#">Show</a></td>
-                <td>16:51 9.8.2020</td>
-                <td>1</td>
-            </tr>
+        {{ end }}
         </tbody>
     </table>
 </div>

@@ -12,7 +12,7 @@ import (
 )
 
 // verifies config from user; if the string is not null, there's at least one error in the config
-func (cfg *File) verifyConfig() string {
+func (cfg *file) verifyConfig() string {
 	str := ""
 
 	// verify blogname
@@ -77,7 +77,7 @@ func (cfg *File) verifyConfig() string {
 	return str
 }
 
-func (cfg *File) readConfig() {
+func (cfg *file) readConfig() {
 	// open file
 	file, err := os.Open("config.json")
 	if err != nil {
@@ -94,7 +94,7 @@ func (cfg *File) readConfig() {
 	}
 }
 
-func (cfg *File) createConfig() {
+func (cfg *file) createConfig() {
 	// open file
 	file, err := os.Create("config.json")
 	if err != nil {
@@ -119,7 +119,7 @@ func (cfg *File) createConfig() {
 
 //noinspection ALL
 func NewConfig() (*Config, error) {
-	cfg := &File{}
+	cfg := &file{}
 
 	// check if config does exist, and if it doesn't, create a new one
 	if file, err := os.Open("config.json"); err != nil {
