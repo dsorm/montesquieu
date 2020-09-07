@@ -2,7 +2,7 @@
   "BlogName": "My blog",
   "ArticlesPerPage": "5",
   "ListenOn": ":80",
-  "Store": "mock",
+  "Store": "postgres",
   "StoreHost": "",
   "StoreDB": "",
   "StoreUser": "",

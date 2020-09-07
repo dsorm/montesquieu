@@ -18,8 +18,6 @@ services:
       LISTENON: ":80"
 
       # dont change these, unless you know what you're doing
-      # you can also use the "mock" store, which does almost nothing
-      # postgres currently does nothing too, but it at least pretends it's useful
       STORE: "postgres"
       STORE_HOST: "postgres"
       STORE_DB: "goblog"

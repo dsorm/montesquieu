@@ -3,7 +3,6 @@ package logic_test
 import (
 	"github.com/david-sorm/goblog/article/logic"
 	"github.com/david-sorm/goblog/store"
-	"github.com/david-sorm/goblog/store/mock"
 	"github.com/david-sorm/goblog/store/postgres"
 	"reflect"
 	"testing"
@@ -18,11 +17,6 @@ func TestParseStore(t *testing.T) {
 		args args
 		want store.Store
 	}{
-		{
-			name: "mock store",
-			args: args{str: "mock"},
-			want: &mock.Store{},
-		},
 		{
 			name: "postgres store",
 			args: args{str: "postgres"},
