@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/david-sorm/goblog/store"
 	pgx "github.com/jackc/pgx/v4/pgxpool"
@@ -48,7 +49,25 @@ func dbInit(host string, db string, user string, password string) error {
 	if err != nil {
 		panic(err)
 	}
-	pool, err = pgx.ConnectConfig(c, config)
+
+	err = errors.New("")
+
+	// up to 30 seconds timeout for postgres
+	maxCount := 30
+	for count := 1; count <= maxCount; count++ {
+		fmt.Println()
+		pool, err = pgx.ConnectConfig(c, config)
+		if err != nil {
+			fmt.Printf("\rConnecting to postgres... (%v/%v)", count, maxCount)
+			count++
+		} else {
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
+	if err != nil {
+		return errors.New("Postgres connection timeout exceeded.")
+	}
 
 	// execute the 'startup' stmt
 	_, err = pool.Exec(returnConnectionCtx(), stmtStartup)
