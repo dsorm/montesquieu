@@ -38,8 +38,6 @@ func (cfg *file) verifyConfig() string {
 	switch cfg.Store {
 	case "":
 		str += "Store can't be empty\n"
-	case "mock":
-		validType = true
 	case "postgres":
 		validType = true
 	}
@@ -104,7 +102,7 @@ func (cfg *file) createConfig() {
 	// default configuration file
 	cfg.BlogName = "My blog"
 	cfg.ListenOn = ":8080"
-	cfg.Store = "mock"
+	cfg.Store = "postgres"
 	cfg.CachingStore = "off"
 	cfg.ArticlesPerPage = "5"
 

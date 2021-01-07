@@ -26,14 +26,13 @@ type Config struct {
 
 	/*
 	 Type of database
-	 Currently only 'mock' and `postgres` is supported
+	 Currently only `postgres` is supported
 	*/
 	Store store.Store
 
 	/*
 	 Login info for Store driver, if needed
 	 Postgres: requires all filled out
-	 Mock: ignores all the fields
 	*/
 	StoreHost     string
 	StoreDB       string

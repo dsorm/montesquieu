@@ -18,11 +18,6 @@ func TestParseStore(t *testing.T) {
 		want store.Store
 	}{
 		{
-			name: "mock store",
-			args: args{str: "mock"},
-			want: &mock.Store{},
-		},
-		{
 			name: "postgres store",
 			args: args{str: "postgres"},
 			want: &postgres.Store{},
