@@ -1,4 +1,4 @@
-module github.com/david-sorm/goblog
+module github.com/david-sorm/montesquieu
 
 go 1.14
 

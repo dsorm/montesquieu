@@ -1,7 +1,7 @@
 package globals
 
 import (
-	"github.com/david-sorm/goblog/config"
+	"github.com/david-sorm/montesquieu/config"
 )
 
 type BlogInformation struct {

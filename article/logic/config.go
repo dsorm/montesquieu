@@ -1,9 +1,8 @@
 package logic
 
 import (
-	storePkg "github.com/david-sorm/goblog/store"
-	"github.com/david-sorm/goblog/store/mock"
-	"github.com/david-sorm/goblog/store/postgres"
+	storePkg "github.com/david-sorm/montesquieu/store"
+	"github.com/david-sorm/montesquieu/store/postgres"
 )
 
 func ParseStore(str string) storePkg.Store {

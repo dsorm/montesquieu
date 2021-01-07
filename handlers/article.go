@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"fmt"
-	articlePkg "github.com/david-sorm/goblog/article"
-	"github.com/david-sorm/goblog/globals"
-	templates "github.com/david-sorm/goblog/template"
+	articlePkg "github.com/david-sorm/montesquieu/article"
+	"github.com/david-sorm/montesquieu/globals"
+	templates "github.com/david-sorm/montesquieu/template"
 	"net/http"
 	"strconv"
 	"strings"

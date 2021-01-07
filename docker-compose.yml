@@ -1,9 +1,9 @@
-# an example docker-compose.yml for a fully functional goblog+postgres stack
+# an example docker-compose.yml for a fully functional montesquieu+postgres stack
 # before running execute scripts/docker-build.sh and scripts/docker-compose-prepare.sh
 version: '2'
 services:
-  goblog:
-    image: goblog
+  montesquieu:
+    image: montesquieu
     restart: unless-stopped
     depends_on:
       - postgres
@@ -21,10 +21,10 @@ services:
       # you can also use the "mock" store, which does almost nothing
       # postgres currently does nothing too, but it at least pretends it's useful
       STORE: "postgres"
-      STORE_HOST: "postgres"
-      STORE_DB: "goblog"
-      STORE_USER: "goblog"
-      STORE_PASSWORD: "goblog"
+      STORE_HOST: "localhost"
+      STORE_DB: "montesquieu"
+      STORE_USER: "montesquieu"
+      STORE_PASSWORD: "montesquieu"
       CACHINGSTORE: "off"
       HOTSWAPTEMPLATES: "no"
 
@@ -32,8 +32,8 @@ services:
     image: postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: goblog
-      POSTGRES_PASSWORD: goblog
+      POSTGRES_USER: montesquieu
+      POSTGRES_PASSWORD: montesquieu
     volumes:
       - ./docker-data/postgres:/var/lib/postgresql/data
 
