@@ -6,5 +6,5 @@ rm config.json | true
 ./docker-conf-gen.sh
 
 # run
-# `serve` is the artefact made from compiling goblog
+# `serve` is the artefact made from compiling montesquieu
 ./serve

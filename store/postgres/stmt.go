@@ -1,7 +1,7 @@
 package postgres
 
 // schema name
-const prefix = `goblog`
+const prefix = `montesquieu`
 
 // This stmt is run on every startup to ensure that database structures exist, and if they don't, it creates them
 const stmtStartup = `

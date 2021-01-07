@@ -1,8 +1,8 @@
 package mock
 
 import (
-	"github.com/david-sorm/goblog/article"
-	"github.com/david-sorm/goblog/store"
+	"github.com/david-sorm/montesquieu/article"
+	"github.com/david-sorm/montesquieu/store"
 	"reflect"
 	"testing"
 )

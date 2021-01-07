@@ -1,9 +1,9 @@
 package mock
 
 import (
-	"github.com/david-sorm/goblog/article"
-	"github.com/david-sorm/goblog/store"
-	"github.com/david-sorm/goblog/users"
+	"github.com/david-sorm/montesquieu/article"
+	"github.com/david-sorm/montesquieu/store"
+	"github.com/david-sorm/montesquieu/users"
 	"html/template"
 	"strconv"
 	"sync"
@@ -233,8 +233,8 @@ func (ms *Store) Init(_ func(), cfg store.StoreConfig) error {
 	ms.articlesByTimestamp = append(ms.articlesByTimestamp, article.Article{
 		Timestamp: 1585828351,
 		ID:        100,
-		Title:     "Welcome to your brand new Goblog installation!",
-		Content:   "Thank you for choosing Goblog! You should consider <b>changing the config.json</b>, since now Goblog only displays mock content, and you won't be able to make articles until you use a real Store.",
+		Title:     "Welcome to your brand new Montesquieu installation!",
+		Content:   "Thank you for choosing Montesquieu! You should consider <b>changing the config.json</b>, since now montesquieu only displays mock content, and you won't be able to make articles until you use a real Store.",
 	})
 
 	// lets generate another mock articles

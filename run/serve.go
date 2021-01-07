@@ -2,22 +2,22 @@ package run
 
 import (
 	"fmt"
-	"github.com/david-sorm/goblog/config"
-	"github.com/david-sorm/goblog/globals"
-	"github.com/david-sorm/goblog/handlers"
-	"github.com/david-sorm/goblog/store"
-	templates "github.com/david-sorm/goblog/template"
+	"github.com/david-sorm/montesquieu/config"
+	"github.com/david-sorm/montesquieu/globals"
+	"github.com/david-sorm/montesquieu/handlers"
+	"github.com/david-sorm/montesquieu/store"
+	templates "github.com/david-sorm/montesquieu/template"
 	"net/http"
 )
 
 func Main() {
-	fmt.Println("Goblog starting...")
+	fmt.Println("Montesquieu starting...")
 	// get the config
 	fmt.Println("Loading config...")
 	var err error
 	globals.Cfg, err = config.NewConfig()
 	if err != nil {
-		fmt.Printf("While verifying the config, some errors in config.json were found. Please fix them before running Goblog:\n%s", err.Error())
+		fmt.Printf("While verifying the config, some errors in config.json were found. Please fix them before running Montesquieu:\n%s", err.Error())
 		return
 	}
 

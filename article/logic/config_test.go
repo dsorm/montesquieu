@@ -1,10 +1,9 @@
 package logic_test
 
 import (
-	"github.com/david-sorm/goblog/article/logic"
-	"github.com/david-sorm/goblog/store"
-	"github.com/david-sorm/goblog/store/mock"
-	"github.com/david-sorm/goblog/store/postgres"
+	"github.com/david-sorm/montesquieu/article/logic"
+	"github.com/david-sorm/montesquieu/store"
+	"github.com/david-sorm/montesquieu/store/postgres"
 	"reflect"
 	"testing"
 )

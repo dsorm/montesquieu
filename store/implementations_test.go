@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/david-sorm/goblog/store"
-	"github.com/david-sorm/goblog/store/postgres"
-	"github.com/david-sorm/goblog/users"
+	"github.com/david-sorm/montesquieu/store"
+	"github.com/david-sorm/montesquieu/store/postgres"
+	"github.com/david-sorm/montesquieu/users"
 	"github.com/jackc/pgx/v4"
 	"github.com/ory/dockertest"
 	"log"
@@ -38,7 +38,7 @@ func (pd *postgresDocker) prepare() {
 
 	// start the container
 	cmd := exec.Command("bash", "-c",
-		"docker run -e POSTGRES_USER=goblog -e POSTGRES_PASSWORD=goblog -e POSTGRES_DB=goblog --rm -d -p 5432:5432 postgres")
+		"docker run -e POSTGRES_USER=montesquieu -e POSTGRES_PASSWORD=montesquieu -e POSTGRES_DB=montesquieu --rm -d -p 5432:5432 postgres")
 	outputBytes, err := cmd.Output()
 	if err != nil {
 		fmt.Println("error while reading docker/bash's stdout:", err)
@@ -50,7 +50,7 @@ func (pd *postgresDocker) prepare() {
 	// wait until it starts up
 	err = errors.New("")
 	for err != nil {
-		_, err = pgx.Connect(context.Background(), "postgres://goblog:goblog@localhost:5432/goblog")
+		_, err = pgx.Connect(context.Background(), "postgres://montesquieu:montesquieu@localhost:5432/montesquieu")
 		if err != nil {
 			fmt.Println("waiting until postgres container is up...")
 		}
@@ -104,9 +104,9 @@ func TestMain(m *testing.M) {
 	// load mock config
 	storeConfig = store.StoreConfig{
 		Host:                 "127.0.0.1",
-		Database:             "goblog",
-		Username:             "goblog",
-		Password:             "goblog",
+		Database:             "montesquieu",
+		Username:             "montesquieu",
+		Password:             "montesquieu",
 		ArticlesPerIndexPage: 0,
 	}
 

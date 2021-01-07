@@ -1,8 +1,8 @@
 package config
 
 import (
-	cfgLogic "github.com/david-sorm/goblog/article/logic"
-	"github.com/david-sorm/goblog/store"
+	cfgLogic "github.com/david-sorm/montesquieu/article/logic"
+	"github.com/david-sorm/montesquieu/store"
 	"strconv"
 	"strings"
 )
