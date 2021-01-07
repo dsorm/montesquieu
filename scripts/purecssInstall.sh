@@ -1,5 +1,5 @@
 #!/bin/bash
-# Downloads and 'installs' PureCSS for goblog
+# Downloads and 'installs' PureCSS for montesquieu
 
 mkdir tmp
 cd tmp
