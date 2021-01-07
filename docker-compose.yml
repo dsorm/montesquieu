@@ -33,5 +33,5 @@ services:
       POSTGRES_USER: montesquieu
       POSTGRES_PASSWORD: montesquieu
     volumes:
-      - ./docker-data/postgres:/var/lib/postgresql/data
+      - ./etc/montesquieu/postgres-data:/var/lib/postgresql/data
 
