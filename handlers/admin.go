@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/david-sorm/goblog/globals"
+	"github.com/david-sorm/montesquieu/globals"
 	"net/http"
 )
-import templates "github.com/david-sorm/goblog/template"
+import templates "github.com/david-sorm/montesquieu/template"
 
 func HandleAdminPanel(rw http.ResponseWriter, req *http.Request) {
 	if err := templates.Store.Lookup("adminPanel.gohtml").Execute(rw, nil); err != nil {

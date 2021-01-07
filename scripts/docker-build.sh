@@ -7,4 +7,4 @@ then
   cd ..
 fi
 
-docker build -t goblog .
+docker build -t montesquieu .

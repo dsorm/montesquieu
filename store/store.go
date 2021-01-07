@@ -1,8 +1,8 @@
 package store
 
 import (
-	"github.com/david-sorm/goblog/article"
-	"github.com/david-sorm/goblog/users"
+	"github.com/david-sorm/montesquieu/article"
+	"github.com/david-sorm/montesquieu/users"
 	"html/template"
 )
 
@@ -17,7 +17,7 @@ type StoreConfig struct {
 	ArticlesPerIndexPage uint64
 }
 
-// StoreInfo should contain info about the store implementation, so goblog can
+// StoreInfo should contain info about the store implementation, so Montesquieu can
 // properly register it
 type StoreInfo struct {
 	// should be a json-friendly and short name

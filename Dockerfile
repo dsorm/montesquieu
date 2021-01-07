@@ -15,7 +15,7 @@ RUN tar -C /usr/local -xzf go.linux-amd64.tar.gz
 RUN rm /tmp/go.linux-amd64.tar.gz
 
 # download purecss
-WORKDIR /home/root/go/src/github.com/david-sorm/goblog/
+WORKDIR /home/root/go/src/github.com/david-sorm/montesquieu/
 COPY scripts/purecssInstall.sh purecssInstall.sh
 RUN chmod +x purecssInstall.sh
 RUN ./purecssInstall.sh
@@ -26,15 +26,15 @@ COPY . .
 # get dependencies and compile
 RUN /usr/local/go/bin/go get -d -v ./...
 RUN /usr/local/go/bin/go build -o serve .
-RUN chmod +x /home/root/go/src/github.com/david-sorm/goblog/run
+RUN chmod +x /home/root/go/src/github.com/david-sorm/montesquieu/run
 
 # final image stage
 FROM ubuntu:focal
 
 # copy artefacts and needed files
 RUN mkdir /app && mkdir /app/html
-COPY --from=builder /home/root/go/src/github.com/david-sorm/goblog/serve /app/serve
-COPY --from=builder /home/root/go/src/github.com/david-sorm/goblog/html/ /app/html/
+COPY --from=builder /home/root/go/src/github.com/david-sorm/montesquieu/serve /app/serve
+COPY --from=builder /home/root/go/src/github.com/david-sorm/montesquieu/html/ /app/html/
 COPY scripts/.docker-conf-gen.sh /app/docker-conf-gen.sh
 COPY scripts/.docker-run.sh /app/docker-run.sh
 

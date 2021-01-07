@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/david-sorm/goblog/store"
+	"github.com/david-sorm/montesquieu/store"
 	pgx "github.com/jackc/pgx/v4/pgxpool"
 	"regexp"
 	"time"

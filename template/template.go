@@ -2,7 +2,7 @@ package templates
 
 import (
 	"fmt"
-	"github.com/david-sorm/goblog/globals"
+	"github.com/david-sorm/montesquieu/globals"
 	"github.com/radovskyb/watcher"
 	"html/template"
 	"io/ioutil"
@@ -43,7 +43,7 @@ func checkRequiredTemplates() {
 }
 
 // Hot Swap Templates are used for faster development of templates, because it auto-reloads templates when changes are
-// detected instead of having to manually restart goblog
+// detected instead of having to manually restart Montesquieu
 func InitHotSwapTemplates() {
 	// run as singleton
 	if liveTemplatesRunning {
