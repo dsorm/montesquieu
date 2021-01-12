@@ -14,8 +14,10 @@ pipeline {
           agent any
           steps {
             echo 'Building...'
-            sh 'go build -o montesquieu .'
-            catchError(buildResult: 'Failure')
+            catchError(buildResult: 'Failure') {
+              sh 'go build -o montesquieu .'
+            }
+
           }
         }
 
@@ -23,8 +25,10 @@ pipeline {
           agent any
           steps {
             echo 'Testing...'
-            sh 'go test ./...'
-            warnError(message: 'Unstable', catchInterruptions: true)
+            warnError(message: 'Unstable', catchInterruptions: true) {
+              sh 'go test ./...'
+            }
+
           }
         }
 
