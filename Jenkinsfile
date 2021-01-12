@@ -1,5 +1,12 @@
 pipeline {
   agent any
+  tools {
+          go 'Go 1.15.6'
+  }
+  environment {
+          GO111MODULE = 'on'
+          CGO_ENABLED = 0
+  }
   stages {
     stage('Run') {
       parallel {
@@ -27,7 +34,7 @@ pipeline {
     stage('Archive artifacts') {
       agent any
       steps {
-        archiveArtifacts(artifacts: 'montesquieu', allowEmptyArchive: true)
+        archiveArtifacts(artifacts: 'montesquieu')
         echo 'Artifacts archived'
       }
     }
