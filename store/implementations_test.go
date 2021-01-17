@@ -8,10 +8,8 @@ import (
 	"github.com/david-sorm/montesquieu/store/postgres"
 	"github.com/david-sorm/montesquieu/users"
 	"github.com/jackc/pgx/v4"
-	"github.com/ory/dockertest"
 	"log"
 	"os"
-	"os/exec"
 	"strconv"
 	"testing"
 	"time"
@@ -21,12 +19,6 @@ var storesToTest []store.Store
 
 var storeConfig store.StoreConfig
 
-type postgresDocker struct {
-	postgresResource *dockertest.Resource
-	pool             *dockertest.Pool
-	id               string
-}
-
 type stores struct {
 	currentStore int
 	init         bool
@@ -34,42 +26,34 @@ type stores struct {
 
 // postgres_prepare makes sure there is a suitable environment for testing the
 // postgres store
-func (pd *postgresDocker) prepare() {
+func prepare() {
 
-	// start the container
-	cmd := exec.Command("bash", "-c",
-		"docker run -e POSTGRES_USER=montesquieu -e POSTGRES_PASSWORD=montesquieu -e POSTGRES_DB=montesquieu --rm -d -p 5432:5432 postgres")
-	outputBytes, err := cmd.Output()
-	if err != nil {
-		fmt.Println("error while reading docker/bash's stdout:", err)
+	// get postgres info and parse it into connString
+	pghost := os.Getenv("PGHOST")
+	pgdatabase := os.Getenv("PGDATABASE")
+	pguser := os.Getenv("PGUSER")
+	pgport := os.Getenv("PGPORT")
+	pgpassword := os.Getenv("PGPASSWORD")
+	if pghost == "" || pgdatabase == "" || pguser == "" || pgpassword == "" {
+		panic("The PGHOST, PGDATABASE, PGUSER or PGPASSWORD environment variable(s) is/are not set! Can't test the postgres store.")
 	}
-	pd.id = string(outputBytes)
-	// strings.TrimSuffix(string(outputBytes), "\n")
-	fmt.Println("Postgres container ID: ", pd.id)
+	if pgport == "" {
+		pgport = "5432"
+	}
+	connString := fmt.Sprintf("postgres://%v:%v@%v:%v/%v", pguser, pgpassword, pghost, pgport, pgdatabase)
 
 	// wait until it starts up
-	err = errors.New("")
+	err := errors.New("")
+	fmt.Println("waiting until postgres is up...")
 	for err != nil {
-		_, err = pgx.Connect(context.Background(), "postgres://montesquieu:montesquieu@localhost:5432/montesquieu")
+		_, err = pgx.Connect(context.Background(), connString)
 		if err != nil {
-			fmt.Println("waiting until postgres container is up...")
+			fmt.Println("...")
 		}
 		time.Sleep(1 * time.Second)
 	}
 
-	fmt.Println("Postgres container running")
-}
-
-// stops the docker container
-func (pd *postgresDocker) stop() {
-	cmd := exec.Command("bash", "-c", "docker stop "+pd.id)
-	if err := cmd.Start(); err != nil {
-		fmt.Println("error while running bash script for docker container:", err)
-	}
-	if err := cmd.Wait(); err != nil {
-		fmt.Println("error while waiting for bash docker container script to execute:", err)
-	}
-	fmt.Println("Postgres container stopped")
+	fmt.Println("connection to postgres successful, postgres running")
 }
 
 // used in for loops for quick traversal of stores
@@ -94,6 +78,7 @@ func (s *stores) Current() store.Store {
 }
 
 // overrides the default main from testing
+// needed since we need to prepare the store before testing starts
 func TestMain(m *testing.M) {
 
 	// load all stores that are meant to be tested
@@ -103,21 +88,19 @@ func TestMain(m *testing.M) {
 
 	// load mock config
 	storeConfig = store.StoreConfig{
-		Host:                 "127.0.0.1",
-		Database:             "montesquieu",
-		Username:             "montesquieu",
-		Password:             "montesquieu",
+		Host:                 os.Getenv("PGHOST"),
+		Database:             os.Getenv("PGDATABASE"),
+		Username:             os.Getenv("PGUSER"),
+		Password:             os.Getenv("PGPASSWORD"),
+		Port:                 os.Getenv("PGPORT"),
 		ArticlesPerIndexPage: 0,
 	}
 
 	// prepare all stores and their dependencies
-	pd := postgresDocker{}
-	pd.prepare()
+	prepare()
 
 	// run the tests
 	exitCode := m.Run()
-
-	pd.stop()
 
 	// end
 	os.Exit(exitCode)
