@@ -35,8 +35,6 @@ type Store interface {
 	// TODO better function argument design (it's still pretty bad)
 	// TODO better internal (caused by the app malfunctioning etc.) and external (user-caused) error handling
 
-	// General
-
 	// Info() has to return general info about the Store implementation itself
 	Info() StoreInfo
 
@@ -50,6 +48,31 @@ type Store interface {
 	*/
 	Init(f func(), cfg StoreConfig) error
 
+	ArticleStore
+	UserStore
+	AuthorStore
+	AdminStore
+}
+
+/*
+ CachingStore should mostly have the same functionality as Store,
+ only with the difference of Use(Store) and different internal logic
+ (returning data from i's own cache instead of doing queries every time there's an
+ article request, etc.)
+*/
+type CachingStore interface {
+	Store
+
+	/*
+	 We use this method to pass the Store which should be used by the CachingStore.
+	 CachingStore should call Init() on the Store before it starts initialising itself.
+	 Any errors that happened during the Init() of the Store should be returned
+	 through CachingStore's Init()
+	*/
+	Use(Store)
+}
+
+type ArticleStore interface {
 	// Articles
 
 	/*
@@ -84,7 +107,9 @@ type Store interface {
 
 	// The article should be looked up by its ID and deleted
 	RemoveArticle(id uint64)
+}
 
+type UserStore interface {
 	// Users
 
 	// Lists Users, sorts by ID
@@ -106,7 +131,9 @@ type Store interface {
 
 	// Removes a user according to his ID
 	RemoveUser(id uint64)
+}
 
+type AuthorStore interface {
 	// Authors
 
 	// Lists Authors, sorts by ID
@@ -124,7 +151,9 @@ type Store interface {
 
 	// Removes an author
 	RemoveAuthor(authorId uint64)
+}
 
+type AdminStore interface {
 	// Admins
 
 	// Searches whether user is an admin according to whether his ID exists
@@ -140,22 +169,4 @@ type Store interface {
 
 	// Demotes an Admin to a User only
 	DemoteFromAdmin(userID uint64)
-}
-
-/*
- CachingStore should mostly have the same functionality as Store,
- only with the difference of Use(Store) and different internal logic
- (returning data from i's own cache instead of doing queries every time there's an
- article request, etc.)
-*/
-type CachingStore interface {
-	Store
-
-	/*
-	 We use this method to pass the Store which should be used by the CachingStore.
-	 CachingStore should call Init() on the Store before it starts initialising itself.
-	 Any errors that happened during the Init() of the Store should be returned
-	 through CachingStore's Init()
-	*/
-	Use(Store)
 }
