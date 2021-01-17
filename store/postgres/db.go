@@ -24,7 +24,7 @@ func (p *Store) Init(f func(), cfg store.StoreConfig) error {
 	p.ArticlesPerIndexPage = cfg.ArticlesPerIndexPage
 	ctx, ctxCancelFunc = context.WithCancel(context.Background())
 
-	err := dbInit(cfg.Host, cfg.Database, cfg.Username, cfg.Password)
+	err := dbInit(cfg.Host, cfg.Database, cfg.Username, cfg.Password, cfg.Port)
 
 	if err != nil {
 		return err
@@ -38,13 +38,19 @@ func (p *Store) Close() {
 }
 
 // prepares the db for operation
-func dbInit(host string, db string, user string, password string) error {
+func dbInit(host string, db string, user string, password string, port string) error {
 
 	// make a new connection pool
+	// TODO connection timeout
 	var err error
 	c, _ := context.WithCancel(ctx)
-	dsn := fmt.Sprintf("user=%v password=%v host=%v dbname=%v port=5432 pool_max_conns=20",
-		user, password, host, db)
+
+	// use the default port if it's undefined by the user
+	if port == "" {
+		port = "5432"
+	}
+	dsn := fmt.Sprintf("user=%v password=%v host=%v dbname=%v port=%v pool_max_conns=20",
+		user, password, host, db, port)
 	config, err := pgx.ParseConfig(dsn)
 	if err != nil {
 		panic(err)
@@ -56,7 +62,9 @@ func dbInit(host string, db string, user string, password string) error {
 	maxCount := 30
 	for count := 1; count <= maxCount; count++ {
 		fmt.Println()
-		pool, err = pgx.ConnectConfig(c, config)
+		connectionContext, cancel := context.WithTimeout(c, 5*time.Second)
+		defer cancel()
+		pool, err = pgx.ConnectConfig(connectionContext, config)
 		if err != nil {
 			fmt.Printf("\rConnecting to postgres... (%v/%v)", count, maxCount)
 			count++

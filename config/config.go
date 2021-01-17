@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+// TODO get rid of old-fashioned config parsing from json and use envs instead
+
 // "parsed" config that's served to the app
 type Config struct {
 	// Blog's name
@@ -32,12 +34,13 @@ type Config struct {
 
 	/*
 	 Login info for Store driver, if needed
-	 Postgres: requires all filled out
+	 Postgres: requires all except StorePort filled out
 	*/
 	StoreHost     string
 	StoreDB       string
 	StoreUser     string
 	StorePassword string
+	StorePort     string
 
 	/*
 	 Type of caching engine used between the app and the store
@@ -62,6 +65,7 @@ type file struct {
 	StoreDB          string
 	StoreUser        string
 	StorePassword    string
+	StorePort        string
 	CachingStore     string
 	HotSwapTemplates string
 }
@@ -78,6 +82,7 @@ func (cfg *file) parseFile() *Config {
 		StoreDB:       cfg.StoreDB,
 		StoreUser:     cfg.StoreUser,
 		StorePassword: cfg.StorePassword,
+		StorePort:     cfg.StorePort,
 		//CachingStore:      nil,
 		HotSwapTemplates: strings.ToLower(cfg.HotSwapTemplates) == "yes",
 	}

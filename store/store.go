@@ -14,6 +14,7 @@ type StoreConfig struct {
 	Database             string
 	Username             string
 	Password             string
+	Port                 string
 	ArticlesPerIndexPage uint64
 }
 
