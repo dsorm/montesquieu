@@ -8,10 +8,10 @@ pipeline {
           CGO_ENABLED = 0
 
           PGHOST = "localhost"
-          PGPORT = 5005
-          PGUSER = test
-          PGPASSWORD = test
-          PGDATABASE = test
+          PGPORT = "5005"
+          PGUSER = "test"
+          PGPASSWORD = "test"
+          PGDATABASE = "test"
   }
   stages {
     stage('Run') {
