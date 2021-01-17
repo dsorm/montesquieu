@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -75,7 +76,24 @@ func (cfg *file) verifyConfig() string {
 	return str
 }
 
-func (cfg *file) readConfig() {
+// returns true if the config is empty (all values at "") or false if not
+func (cfg *file) configEmpty() bool {
+	v := reflect.ValueOf(*cfg)
+
+	// just a bit of dark magic using reflection
+	// iterate over struct and if a string longer than zero is found, return false
+	for i := 0; i < v.NumField(); i++ {
+		element := v.Field(i).String()
+		if len(element) != 0 {
+			return false
+		}
+	}
+
+	return true
+}
+
+// reads the config from config.json
+func (cfg *file) readConfigFile() {
 	// open file
 	file, err := os.Open("config.json")
 	if err != nil {
@@ -90,6 +108,22 @@ func (cfg *file) readConfig() {
 	if json.Unmarshal(bytes, &cfg) != nil {
 		panic("The syntax of config.json is invalid")
 	}
+}
+
+// reads the config from environmental variables passed by the shell/docker engine
+func (cfg *file) readConfigEnv() {
+	cfg.BlogName = os.Getenv("BLOG_NAME")
+	cfg.ArticlesPerPage = os.Getenv("ARTICLES_PER_PAGE")
+	cfg.ListenOn = os.Getenv("LISTEN_ON")
+	cfg.Store = os.Getenv("STORE")
+	cfg.StoreHost = os.Getenv("STORE_HOST")
+	cfg.StoreDB = os.Getenv("STORE_DB")
+	cfg.StoreUser = os.Getenv("STORE_USER")
+	cfg.StorePassword = os.Getenv("STORE_PASSWORD")
+	cfg.StorePort = os.Getenv("STORE_PORT")
+	cfg.CachingStore = os.Getenv("CACHING_STORE")
+	cfg.HotSwapTemplates = os.Getenv("HOT_SWAP_TEMPLATES")
+
 }
 
 func (cfg *file) createConfig() {
@@ -129,7 +163,7 @@ func NewConfig() (*Config, error) {
 	}
 
 	// read and verify the config
-	cfg.readConfig()
+	cfg.readConfigFile()
 	errs := cfg.verifyConfig()
 
 	// if any errors were found, lets return the errors
