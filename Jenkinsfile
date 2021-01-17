@@ -32,8 +32,9 @@ pipeline {
           steps {
             echo 'Testing...'
             warnError(message: 'Unstable', catchInterruptions: true) {
-              docker.image("postgres").withRun("docker run -d -p ${env.PGPORT}:5432 -e POSTGRES_USER=${env.PGUSER} -e POSTGRES_PASSWORD=${env.PGPASSWORD}")
-              sh 'go test ./...'
+              docker.image("postgres").withRun("docker run -d -p ${env.PGPORT}:5432 -e POSTGRES_USER=${env.PGUSER} -e POSTGRES_PASSWORD=${env.PGPASSWORD}") { c ->
+                sh 'go test ./...'
+              }
             }
 
           }
