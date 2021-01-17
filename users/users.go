@@ -30,15 +30,3 @@ type Author struct {
 
 // Admin is a kind of User that has access to the Admin Panel
 type Admin User
-
-// HashPassword hashes password from user's input, so it can be safely put
-// into a database
-func (u *User) HashPassword(input string) {
-	// TODO
-}
-
-// VerifyPassword verifies the password that has user provided ('input') against
-// the hash from a database ('hash')
-func (u *User) VerifyPassword(hash string, input string) {
-	// TODO
-}
