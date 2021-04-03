@@ -1,0 +1,1 @@
+npx tailwind build html/css/tailwind.css -o html/css/tailwind-compiled.css
