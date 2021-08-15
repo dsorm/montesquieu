@@ -59,7 +59,8 @@ func Main() {
 	mux.HandleFunc("/admin/panel/authors", handlers.HandleAdminPanelAuthors)
 	mux.HandleFunc("/admin/panel/admins", handlers.HandleAdminPanelAdmins)
 	mux.HandleFunc("/admin/panel/configuration", handlers.HandleAdminPanelConfiguration)
-	mux.HandleFunc("/login", handlers.HandleLogin)
+	// TODO handle login
+	// mux.HandleFunc("/login", handlers.HandleLogin)
 
 	// http.StripPrefix is needed for FileServer handlers so the paths work correctly
 	mux.Handle("/css/", http.StripPrefix("/css/", handleCss))
