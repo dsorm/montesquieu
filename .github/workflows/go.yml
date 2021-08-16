@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ master, go-prototype ]
 
+env:
+  PGHOST: localhost
+  PGDATABASE: montesquieu
+  PGUSER: montesquieu
+  PGPASSWORD: montesquieu
+
 jobs:
 
   build:
@@ -34,5 +40,7 @@ jobs:
       run: go build -v .
       
     - name: Run tests
-      run: go test ./...
+      run: |
+
+        go test ./...
       
