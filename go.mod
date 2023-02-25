@@ -12,5 +12,5 @@ require (
 	github.com/raja/argon2pw v1.0.1
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/stretchr/testify v1.6.1 // indirect
-	golang.org/x/sys v0.0.0-20200610111108-226ff32320da // indirect
+	golang.org/x/sys v0.1.0 // indirect
 )
